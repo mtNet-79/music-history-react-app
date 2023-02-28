@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import $ from "jquery";
-import "../stylesheets/FormView.css";
+import { connect } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import PropTypes from 'prop-types';
+// import "../styles/FormView.css";
 
-const ComposerForm = (props) => {
-  const history = useHistory();
+const ComposerAddForm = (props) => {
+  const navigate = useNavigate();
   const [composerName, setComposerName] = useState("");
   const [birthday, setBirthday] = useState("");
   const [deathday, setDeathday] = useState("");
@@ -14,6 +18,8 @@ const ComposerForm = (props) => {
   const [compositionsArr, setCompositionsArr] = useState([]);
   const [compositionInput, setCompositionInput] = useState([]);
   const [contemporariesArr, setContemporariesArr] = useState([]);
+  const [contemporaryInput, setContemporaryInput] = useState([]);
+  const [filteredComposers, setFilteredComposers] = useState([]);
   const [performersArr, setPerformersArr] = useState([]);
   const [rating, setRating] = useState(0);
   const [favorite, setFavorite] = useState(false);
@@ -23,7 +29,8 @@ const ComposerForm = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef(null);
   const inputNameRef = useRef(null);
-  const [matchedComposer, setMatchedComposer] = useState(null)
+  const [matchedComposer, setMatchedComposer] = useState(null);
+  const [matchedContemporary, setMatchedContemporary] = useState(null);
 
   const {
     dispatch,
@@ -35,22 +42,9 @@ const ComposerForm = (props) => {
     compositions,
     performers,
     userName,
-    nations
+    nations,
   } = props;
-  // use useEffect hook to fetch categories on component mount
-//   useEffect(() => {
-//     // $.ajax({
-//     //   url: `/composers/create`, //TODO: update request URL
-//     //   type: "GET",
-//     //   success: (result) => {
-//     //     setState(result);
-//     //   },
-//     //   error: (error) => {
-//     //     alert("Unable to load. Please try your request again");
-//     //   },
-//     // });
-//   }, []); // empty dependency array ensures this effect runs only once on mount
-  
+  console.log("props: ", props);
   // handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -63,11 +57,12 @@ const ComposerForm = (props) => {
         name: composerName,
         birthday: birthday,
         deathday: deathday,
+        period: period_id,
         nationality: nationality,
-        styles: styles,
-        compositions: compositions,
-        contemporaries: contemporaries,
-        performers: performers,
+        styles: stylesArr,
+        compositions: compositionsArr,
+        contemporaries: contemporariesArr,
+        performers: performersArr,
         rating: rating,
         favorite: favorite,
       }),
@@ -84,24 +79,7 @@ const ComposerForm = (props) => {
     });
   };
 
-//   const checkForm = (e) => {
-//     if (e.target.id === "composerName") {
-//       Object.keys(composers).forEach((composerId) => {
-//         composerName === composerId
-//           ? alert("This composer has already been entered.")
-//           : setComposerName(e.target.value);
-//       });
-//       setComposerName(e.target.value);
-//     }
-//     if (e.target.id === "birthday") setBirthday(e.target.value);
-//     if (e.target.id === "deathday") setDeathday(e.target.value);
-//     if (e.target.id === "nationality") setNationality(e.target.value);
-//     if (e.target.id === "period_id") setPeriod_id(e.target.value);
-//   };
-
-
-
-  const handleBlur = () => {
+  const handleBlur = (e) => {
     if (composerName) {
       // const matched = composers.find(
       //   (composer) => composer.name === composerName
@@ -109,6 +87,12 @@ const ComposerForm = (props) => {
       if (matchedComposer) {
         alert("Record already exist, please provide a unique name");
       }
+    }
+    if (e.target.id === "contemporary" && e.relatedTarget === null) {
+      // The user moved focus outside the window, ignore the completion text
+      setMatchedContemporary(null);
+    } else {
+      // The user moved focus to another element within the window, apply the completion text
     }
   };
 
@@ -121,32 +105,28 @@ const ComposerForm = (props) => {
       const matchArr = composers.filter((composer) =>
         composer.name.toLowerCase().startsWith(value.toLowerCase())
       );
-      const top_match =
-        matchArr.length > 0 ? matchArr[0].name : null;
+      const top_match = matchArr.length > 0 ? matchArr[0].name : null;
       if (top_match) {
         const fullname = value.toLowerCase();
         //name without the typed portion
         const nameEnd = top_match.slice(fullname.length);
         //setMatchedComposer to test the outer span
-        setMatchedComposer(top_match)
-        inputNameRef.current.setSelectionRange(
-            fullname,
-            top_match.length
-        );
+        setMatchedComposer(top_match);
+        inputNameRef.current.setSelectionRange(fullname, top_match.length);
         inputNameRef.current.style.color = "#999";
         inputNameRef.current.style.fontWeight = "lighter";
       } else {
         setComposerName(value);
-        setMatchedComposer(null)
+        setMatchedComposer(null);
         inputNameRef.current.style.color = "#000";
         inputNameRef.current.style.fontWeight = "normal";
       }
     }
     //life-dates inputs
-    if (id==="birthday") setBirthday(value);
-    if (id==="deathday") setDeathday(value);
+    if (id === "birthday") setBirthday(value);
+    if (id === "deathday") setDeathday(value);
     //place of birth or indentity
-    //select 
+    //select
     if (id === "nationality") {
       setNationality(value);
       setSelectedIndex(-1);
@@ -162,20 +142,73 @@ const ComposerForm = (props) => {
       }
     }
     if (id === "compositions") {
-        setCompositionInput(value);
-        
+      setCompositionInput(value);
+
       compositions.forEach((c) => {});
       setCompositionInput(value);
     }
-  };
+    if (id === "contemporaries") {
+      setContemporaryInput(value);
+      //find all composers whose name property matching, so far, what the user has typed
+      const matchArr = composers.filter((composer) =>
+        composer.name.toLowerCase().startsWith(value.toLowerCase())
+      );
+      //only show the top match, user needs to type more if it is ambigous and there is more than one
+      matchedContemporary = matchArr.length > 0 ? matchArr[0].name : null;
+      //each time there is match
+      if (matchedContemporary) {
+        const typedStr = value.toLowerCase();
+        //name without the typed portion
+        const completionText = matchedContemporary.slice(typedStr.length);
 
+        inputNameRef.current.setSelectionRange(
+          typedStr.length,
+          matchedContemporary.length
+        );
+        inputNameRef.current.style.color = "#999";
+        inputNameRef.current.style.fontWeight = "lighter";
+        // get the start and end position of the typed string
+        const startPos = inputNameRef.current.selectionStart;
+        const endPos = inputNameRef.current.selectionEnd;
+
+        // set the input value with the matched composer name and completion text
+        //same as matchedContemporary, just experimenting here
+        const newValue = `${typedStr}${completionText}`;
+        inputNameRef.current.value = newValue;
+        // set the cursor position to the end of the typed string
+        inputNameRef.current.setSelectionRange(startPos, endPos);
+
+        // set the style of the completion text
+        const completionStartPos = startPos + typedStr.length;
+        const completionEndPos = completionStartPos + completionText.length;
+        inputNameRef.current.setSelectionRange(
+          completionStartPos,
+          completionEndPos
+        );
+        inputNameRef.current.style.color = "#999";
+        inputNameRef.current.style.fontWeight = "lighter";
+        // inputNameRef.current.setSelectionRange(typedStr, matchedContemporary.length);
+        // inputNameRef.current.style.color = "#999";
+        // inputNameRef.current.style.fontWeight = "lighter";
+      } else {
+        // reset the style if there is no match
+        inputNameRef.current.style.color = "";
+        inputNameRef.current.style.fontWeight = "";
+      }
+    }
+  };
 
   const handleSelectChange = (e) => {
     if (e.target.value) {
       if (e.target.id === "styles") {
-        const selectedOption = styles.find((s) => s.id === parseInt(styleId));
-        console.log("Selected Option: ", selectedOption);
-        setStylesArr((styleArr) => [...styleArr, e.target.id]);
+        // Get the selected options as an array
+        const selectedOptions = Array.from(e.target.selectedOptions);
+        // Get the selected styles from the `styles` array
+        const selectedStyles = selectedOptions.map((option) =>
+          styles.find((style) => style.id === parseInt(option.id))
+        );
+
+        setStylesArr((styleArr) => [...styleArr, selectedStyles]);
       }
       if (e.target.id === "performers") {
         setSelectedPerformer(e.target.value);
@@ -186,9 +219,13 @@ const ComposerForm = (props) => {
     }
   };
 
-  // const filteredCompositions = compositions.filter((c) =>
-  //   c.name.toLowerCase().includes(compositionInput.toLowerCase())
-  // );
+  const handleRemoveStyle = (id) => {
+    setStylesArr((stylesArr) => stylesArr.filter((s) => s.id !== id));
+  };
+
+  const filteredCompositions = compositions.filter((c) =>
+    c.name.toLowerCase().includes(compositionInput.toLowerCase())
+  );
   const handleKeyDown = (e) => {
     console.log("what is e.key on keydown: ", e.key);
     if (e.target.tagName === "SELECT") {
@@ -229,6 +266,24 @@ const ComposerForm = (props) => {
         setFilteredNations([]);
       }
     }
+    // Check if focus is in the contemporary input box
+    if (e.target.id === "contemporary-input") {
+      // Handle tab key
+      if (e.key === "Tab") {
+        e.preventDefault();
+        // Use the top match as the input value
+        if (matchedContemporary) {
+          setContemporariesArr((contemporariesArr) => ({
+            ...contemporariesArr,
+            matchedComposer,
+          }));
+        }
+        // Reset the matched composer and input style
+        setMatchedContemporary(null);
+        inputNameRef.current.style.color = "#000";
+        inputNameRef.current.style.fontWeight = "normal";
+      }
+    }
   };
   const removePerformer = (performerToRemove) => {
     setPerformersArr(
@@ -236,24 +291,21 @@ const ComposerForm = (props) => {
     );
   };
   const handleListInput = (e) => {
-    console.log("handleListInput event from : ", e.target.id)
+    console.log("handleListInput event from : ", e.target.id);
     if (e.target.id === "compositions" && compositionInput.trim() !== "")
-      setCompositionsArr([...compositionsArr, compositionInput]);
-    if (e.target.id === "contemporaries" && contemporaryInput.trim() !== "")
-      setCompositionsArr([...contemporariesArr, contemporaryInput]);
-    if (e.target.id === "compositions" && setCompositionInput.trim() !== "")
-      setCompositionsArr([...compositionsArr, compositionInput]);
-    if (e.target.id === "compositions" && setCompositionInput.trim() !== "")
       setCompositionsArr([...compositionsArr, compositionInput]);
   };
 
   const handleButtonClick = (e) => {
     e.preventDefault();
-    if (e.target.id === "add_performer") history.push("/add-performer"); // navigate to performer form
+    if (e.target.id === "add_performer") navigate("/performers/create"); // navigate to performer form
   };
 
   const handleInputClick = () => {
     inputRef.current.focus();
+  };
+  const handleFavoriteClick = () => {
+    setFavorite((favorite) => !favorite);
   };
 
   return (
@@ -308,7 +360,6 @@ const ComposerForm = (props) => {
               onBlur={handleBlur}
               required
               autoFocus
-
             />
           </div>
         </div>
@@ -373,8 +424,8 @@ const ComposerForm = (props) => {
           <label htmlFor="period_id">Period</label>
           <select name="period" id="period" onChange={handleSelectChange}>
             <option value="">Select a period</option>
-            {state.periods &&
-              state.periods.map((period) => (
+            {periods &&
+              periods.map((period) => (
                 <option key={period.id} value={period.id}>
                   {period.name}
                 </option>
@@ -385,18 +436,18 @@ const ComposerForm = (props) => {
           <label htmlFor="styles">Styles</label>
           <select name="styles" onChange={handleSelectChange}>
             <option value="">Select a style</option>
-            {state.styles &&
-              state.styles.map((s) => (
+            {styles &&
+              styles.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
               ))}
           </select>
-          {selectedStyles.length > 0 && (
+          {stylesArr.length > 0 && (
             <div id="styles_hold">
               <h2>Selected Styles:</h2>
               <ul>
-                {selectedStyles.map((s) => (
+                {stylesArr.map((s) => (
                   <li key={s.id}>
                     {s.name}
                     <button onClick={() => handleRemoveStyle(s.id)}>
@@ -409,7 +460,7 @@ const ComposerForm = (props) => {
           )}
         </div>
 
-        {/* <div className="mb-3">
+        <div className="mb-3">
           <label htmlFor="compositions">Compositions</label>
           <input
             type="text"
@@ -434,7 +485,7 @@ const ComposerForm = (props) => {
               </ul>
             </div>
           )}
-        </div> */}
+        </div>
 
         <div className="mb-3">
           <label htmlFor="contemporaries">Contemporaries</label>
@@ -450,11 +501,11 @@ const ComposerForm = (props) => {
             required
           />
 
-          {filteredComposers.length > 0 && (
+          {contemporariesArr.length > 0 && (
             <div>
               <h2>Filtered Composers:</h2>
               <ul>
-                {filteredComposers.map((c) => (
+                {contemporariesArr.map((c) => (
                   <li
                     onClick={() =>
                       setContemporariesArr([...contemporariesArr, c.id])
@@ -549,4 +600,42 @@ const ComposerForm = (props) => {
   );
 };
 
-export default FormView;
+ComposerAddForm.propTypes = {
+  authedUser: PropTypes.string.isRequired,
+  image: PropTypes.string,
+  composers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  styles: PropTypes.arrayOf(PropTypes.string),
+  periods: PropTypes.arrayOf(PropTypes.string),
+  nationalities: PropTypes.arrayOf(PropTypes.string),
+  compositions: PropTypes.arrayOf(PropTypes.object),
+  performers: PropTypes.arrayOf(PropTypes.object),
+  userName: PropTypes.string,
+  nations: PropTypes.arrayOf(PropTypes.string),
+};
+
+const mapStateToProps = ({
+  authedUser,
+  composers,
+  styles,
+  image,
+  periods,
+  nationalities,
+  compositions,
+  performers,
+  userName, 
+  nations
+
+}) => ({
+  authedUser,
+  composers,
+  styles,
+  image,
+  periods,
+  nationalities,
+  compositions,
+  performers,
+  userName, 
+  nations
+});
+
+export default connect(mapStateToProps)(ComposerAddForm);

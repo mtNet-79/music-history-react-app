@@ -6,7 +6,7 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "public"),
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -14,8 +14,10 @@ module.exports = {
     }),
   ],
   devServer: {
+    historyApiFallback: true,
     static: {
-      directory: path.join(__dirname, "build"),
+      directory: path.resolve(__dirname, "public"),
+      publicPath: "/",
     },
     port: 3000,
   },
@@ -27,12 +29,14 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"],
       },
+      {
+        test: /\.(css|scss)$/i,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
     ],
   },
   // pass all js files through Babel
   resolve: {
     extensions: ["*", ".js", ".jsx"],
-  }
+  },
 };
-
-
