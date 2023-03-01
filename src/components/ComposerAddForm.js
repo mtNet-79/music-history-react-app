@@ -600,17 +600,30 @@ const ComposerAddForm = (props) => {
   );
 };
 
+// ComposerAddForm.propTypes = {
+//   authedUser: PropTypes.string.isRequired,
+//   image: PropTypes.string,
+//   composers: PropTypes.arrayOf(PropTypes.object).isRequired,
+//   styles: PropTypes.arrayOf(PropTypes.string),
+//   periods: PropTypes.arrayOf(PropTypes.string),
+//   nationalities: PropTypes.arrayOf(PropTypes.string),
+//   compositions: PropTypes.arrayOf(PropTypes.object),
+//   performers: PropTypes.arrayOf(PropTypes.object),
+//   userName: PropTypes.string,
+//   nations: PropTypes.arrayOf(PropTypes.string),
+// };
+
 ComposerAddForm.propTypes = {
   authedUser: PropTypes.string.isRequired,
   image: PropTypes.string,
-  composers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  styles: PropTypes.arrayOf(PropTypes.string),
-  periods: PropTypes.arrayOf(PropTypes.string),
-  nationalities: PropTypes.arrayOf(PropTypes.string),
-  compositions: PropTypes.arrayOf(PropTypes.object),
-  performers: PropTypes.arrayOf(PropTypes.object),
-  userName: PropTypes.string,
-  nations: PropTypes.arrayOf(PropTypes.string),
+  composers: PropTypes.object.isRequired,
+  styles: PropTypes.object.isRequired,
+  periods: PropTypes.object.isRequired,
+  nationalities: PropTypes.object.isRequired,
+  compositions: PropTypes.object.isRequired,
+  performers: PropTypes.object.isRequired,
+  authedUser: PropTypes.string,
+  nations: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = ({
