@@ -1,4 +1,3 @@
-
 @import '~react-toastify/scss/_toast.scss';
 @import '~react-toastify/scss/_toastContainer.scss';
 @import '~react-toastify/scss/_theme.scss';
@@ -209,7 +208,7 @@ a {
 // .flex-row {
 //   display: flex;
 //   /* align-items: center; */
-  
+
 // }
 
 // .row {
@@ -220,7 +219,7 @@ a {
 //   border-right: 1px solid grey;
 //   border-left: 1px solid grey;
 //   border-bottom: solid 1px grey;
-  
+
 // }
 
 // .header {
@@ -244,7 +243,7 @@ a {
 //   width: calc(100%/3);
 //   text-align: center;
 //   padding: 0.5em 0.5em;
-  
+
 //   display: flex; 
 //     align-items: center;
 //     justify-content: center;
@@ -467,18 +466,19 @@ input:checked + .slider:before {
   box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
 }
 
-.react-switch-checkbox:checked + .react-switch-label .react-switch-button {
+.react-switch-checkbox:checked+.react-switch-label .react-switch-button {
   left: calc(100% - 4px);
   transform: translateX(-100%);
- 
+
 }
-.react-switch-checkbox:checked + .react-switch-label {
+
+.react-switch-checkbox:checked+.react-switch-label {
   background: #2196F3;
 }
 
 .react-switch-label:active .react-switch-button {
   width: 60px;
-  
+
 }
 
 
@@ -497,10 +497,12 @@ input[type=text] {
   background-color: #f1f1f1;
   width: 100%;
 }
+
 input[type=submit] {
   background-color: DodgerBlue;
   color: #fff;
 }
+
 .autocomplete-items {
   position: absolute;
   border: 1px solid #d4d4d4;
@@ -512,16 +514,19 @@ input[type=submit] {
   left: 0;
   right: 0;
 }
+
 .autocomplete-items div {
   padding: 10px;
   cursor: pointer;
   background-color: #fff;
   border-bottom: 1px solid #d4d4d4;
 }
+
 .autocomplete-items div:hover {
   /*when hovering an item:*/
   background-color: #e9e9e9;
 }
+
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important;
@@ -547,23 +552,28 @@ input[type=submit] {
   direction: ltr;
   /* webkit only issue #791 */
   z-index: 0;
+
   &--rtl {
     direction: rtl;
   }
+
   &--close-on-click {
     cursor: pointer;
   }
+
   &-body {
     margin: auto 0;
     flex: 1 1 auto;
     padding: 6px;
     display: flex;
     align-items: center;
-    & > div:last-child {
+
+    &>div:last-child {
       word-break: break-word;
       flex: 1;
     }
   }
+
   &-icon {
     margin-inline-end: 10px;
     width: 20px;

@@ -6,7 +6,7 @@ import PollContainer from "./PollContainer";
 import PropTypes from "prop-types";
 
 const Dashboard = (props) => {
-  const { users, authedUser, performers, composers } = props;
+  const { users, authedUser, performers, composers, favorites } = props;
 
   const [toggleValue, setToggleValue] = useState(true);
 
@@ -15,40 +15,26 @@ const Dashboard = (props) => {
   };
 
 
-  const unansweredPollsSorted =
-    answeredPolls.length !== 0
-      ? pollIds.filter((pid) => !answeredPolls.includes(pid))
-      : pollIds;
-
-  const answeredPollsSorted = answeredPolls.sort(
-    (a, b) => polls[b].timestamp - polls[a].timestamp
-  );
   return (
     <div className="container">
-      <div className="poll-container">
-        <div className="flex-row">
-          {authedUser ? (
-            <>
-              <div className="cell">
+      <div className="row">
+              <div className="col-6">
                 <Switch isOn={toggleValue} handleToggle={handleToggle} />
               </div>
-              <div className="cell">
+              <div className="col-6">
                 {toggleValue ? (
-                  <h2 className="polls-header center">New Polls</h2>
+                  <h2 className="display-2 fw-bold text-center text-primary mb-4">Composers</h2>
                 ) : (
-                  <h2 className="polls-header center">Answered Polls</h2>
+                  <h2 className="display-2 fw-bold text-center text-primary mb-4">
+                    Performers
+                  </h2>
                 )}
               </div>
-            </>
-          ) : (
-            <h2 className="polls-header center">New Polls</h2>
-          )}
-        </div>
         {authedUser ? (
           toggleValue ? (
-            <PollContainer polls={unansweredPollsSorted} answered={!toggleValue} />
+            <ComposerContainer composers={unansweredPollsSorted} answered={!toggleValue} />
           ) : (
-            <PollContainer
+            <PerformerContainer
               polls={answeredPollsSorted}
               answered={!toggleValue}
             />
@@ -62,17 +48,17 @@ const Dashboard = (props) => {
 };
 
 Dashboard.propTypes = {
-  polls: PropTypes.object.isRequired,
+  composers:  PropTypes.arrayOf(PropTypes.string),
   authedUser: PropTypes.string,
   users: PropTypes.object.isRequired,
-  pollIds: PropTypes.arrayOf(PropTypes.string)
+  performers: PropTypes.arrayOf(PropTypes.string),
+  favorites: PropTypes.object.isRequired
 }
-const mapStateToProps = ({ polls, authedUser, users }) => ({
+const mapStateToProps = ({ performers, authedUser, users, composers }) => ({
   authedUser,
-  pollIds: Object.keys(polls).sort(
-    (a, b) => polls[b].timestamp - polls[a].timestamp
-  ),
+  composers,
   users,
-  polls,
+  performers,
+  favorites: users[authedUser].favorites
 });
 export default connect(mapStateToProps)(Dashboard);
