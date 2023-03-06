@@ -1,87 +1,114 @@
 import { NavLink, Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { setAuthedUser } from "../actions/authedUser";
 import PropTypes from "prop-types";
+import "../styles/nav.scss";
 
 const Nav = (props) => {
   // console.log("nav props: ", props);
   const { dispatch, users, authedUser } = props;
   const user = users[authedUser];
+  const location = useLocation();
+  const currentEndpoint = location.pathname;
 
   const hanldeLogOutOnClick = () => {
     dispatch(setAuthedUser());
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light navbar-custom">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">
-          🎻
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <div className="navbar-header">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <NavLink to="/" className="navbar-brand">
+            🎻
+          </NavLink>
+        </div>
+
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
+            {currentEndpoint.startsWith("/composers/") ||
+              (currentEndpoint.startsWith("/performers") && (
+                <>
+                  <li className="nav-li">
+                    <form
+                      className="search"
+                      method="post"
+                      action={
+                        currentEndpoint.startsWith("/composers/")
+                          ? "/composers/search"
+                          : "/performers/search"
+                      }
+                    >
+                      <input
+                        className="form-control"
+                        type="search"
+                        name="search_term"
+                        placeholder={`Find a ${
+                          currentEndpoint.startsWith("/composers/")
+                            ? "composer"
+                            : "performer"
+                        } by name`}
+                        aria-label="Search"
+                      />
+                    </form>
+                  </li>
+                  <li className="nav-li">
+                    <div className="inrow-span"> or </div>
+                  </li>
+                  <li className="nav-li">
+                    <form
+                      className="search"
+                      id="periodForm"
+                      method="post"
+                      action={
+                        currentEndpoint.startsWith("/composers/")
+                          ? "/composers/search/period"
+                          : "/performers/search/period"
+                      }
+                    >
+                      <select
+                        className="form-control"
+                        name="search_period_term"
+                        aria-label="Select"
+                        id="period_search"
+                      ></select>
+                    </form>
+                  </li>
+                </>
+              ))}
+
             <li className="nav-item">
-              <NavLink
-                to="/composers"
-                className="nav-link"
-                activeClassName="active"
-              >
+              <NavLink to="/composers" className="nav-link">
                 Composers
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink
-                to="/performers"
-                className="nav-link"
-                activeClassName="active"
-              >
+              <NavLink to="/performers" className="nav-link">
                 Performers
               </NavLink>
             </li>
+            {authedUser && (
+              <li className="nav-item">
+                <NavLink to="/favorites" className="nav-link">
+                  Favorites
+                </NavLink>
+              </li>
+            )}
           </ul>
           {authedUser ? (
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <form
-                  className="search"
-                  method="post"
-                  action="/composers/search"
-                >
-                  <input
-                    className="form-control"
-                    type="search"
-                    name="search_term"
-                    placeholder="Find a composer by name"
-                    aria-label="Search"
-                  />
-                </form>
-              </li>
-              <li className="nav-item">
-                <form
-                  className="search"
-                  method="post"
-                  action="/performers/search"
-                >
-                  <input
-                    className="form-control"
-                    type="search"
-                    name="search_term"
-                    placeholder="Find a performer by name"
-                    aria-label="Search"
-                  />
-                </form>
-              </li>
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"

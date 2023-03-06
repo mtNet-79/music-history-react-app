@@ -32,9 +32,8 @@ export async function getInitialData() {
     _getTitles(),
     _getRecordings(),
     _getCompositions(),
-  ]);
-
-  console.log("AT API :", composers)
+  ]);console.log("FROM LOAD : ", composers)
+  
   return {
     users,
     composers,

@@ -4,7 +4,7 @@ import $ from "jquery";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 // import "../styles/FormView.css";
 
 const ComposerAddForm = (props) => {
@@ -16,14 +16,14 @@ const ComposerAddForm = (props) => {
   const [period_id, setPeriod_id] = useState("");
   const [stylesArr, setStylesArr] = useState([]);
   const [compositionsArr, setCompositionsArr] = useState([]);
-  const [compositionInput, setCompositionInput] = useState("");
+  const [compositionInput, setCompositionInput] = useState([]);
   const [contemporariesArr, setContemporariesArr] = useState([]);
   const [contemporaryInput, setContemporaryInput] = useState([]);
   const [filteredComposers, setFilteredComposers] = useState([]);
   const [performersArr, setPerformersArr] = useState([]);
   const [rating, setRating] = useState(0);
   const [favorite, setFavorite] = useState(false);
-  const [selectedPerformer, setSelectedPerformer] = useState([""]);
+  const [selectedPerformer, setSelectedPerformer] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredNations, setFilteredNations] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -222,13 +222,10 @@ const ComposerAddForm = (props) => {
   const handleRemoveStyle = (id) => {
     setStylesArr((stylesArr) => stylesArr.filter((s) => s.id !== id));
   };
-  const filteredCompositions = compositionInput
-    ? Object.keys(compositions).filter((cid) =>
-        compositions[cid].name
-          .toLowerCase()
-          .includes(compositionInput.toLowerCase())
-      )
-    : [];
+
+  const filteredCompositions = compositions.filter((c) =>
+    c.name.toLowerCase().includes(compositionInput.toLowerCase())
+  );
   const handleKeyDown = (e) => {
     console.log("what is e.key on keydown: ", e.key);
     if (e.target.tagName === "SELECT") {
@@ -412,7 +409,7 @@ const ComposerAddForm = (props) => {
             <ul>
               {filteredNations.map((nation, index) => (
                 <li
-                  key={index}
+                  key={nation}
                   className={index === selectedIndex ? "highlighted" : ""}
                   onClick={() => setNationality(nation)}
                 >
@@ -440,9 +437,9 @@ const ComposerAddForm = (props) => {
           <select name="styles" onChange={handleSelectChange}>
             <option value="">Select a style</option>
             {styles &&
-              Object.keys(styles).map((skey) => (
-                <option key={styles[skey].id} value={styles[skey].id}>
-                  {styles[skey].name}
+              styles.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
                 </option>
               ))}
           </select>
@@ -536,9 +533,9 @@ const ComposerAddForm = (props) => {
             onKeyDown={handleKeyDown}
           >
             <option value="">Select a performer</option>
-            {Object.keys(performers).map((pid) => (
-              <option key={pid} value={pid}>
-                {performers[pid].name}
+            {performers.map((performer) => (
+              <option key={performer.id} value={performer.id}>
+                {performer.name}
               </option>
             ))}
           </select>
@@ -621,12 +618,12 @@ ComposerAddForm.propTypes = {
   image: PropTypes.string,
   composers: PropTypes.object.isRequired,
   styles: PropTypes.object.isRequired,
-  periods: PropTypes.object,
-  nationalities: PropTypes.object,
-  compositions: PropTypes.object,
-  performers: PropTypes.object,
+  periods: PropTypes.object.isRequired,
+  nationalities: PropTypes.object.isRequired,
+  compositions: PropTypes.object.isRequired,
+  performers: PropTypes.object.isRequired,
   authedUser: PropTypes.string,
-  nations: PropTypes.arrayOf(PropTypes.string),
+  nations: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = ({
@@ -638,8 +635,9 @@ const mapStateToProps = ({
   nationalities,
   compositions,
   performers,
-  userName,
-  nations,
+  userName, 
+  nations
+
 }) => ({
   authedUser,
   composers,
@@ -649,8 +647,9 @@ const mapStateToProps = ({
   nationalities,
   compositions,
   performers,
-  userName,
-  nations,
+  userName, 
+  nations
 });
 
 export default connect(mapStateToProps)(ComposerAddForm);
+ 

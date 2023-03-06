@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 // import '../styles/App.css';
 //TODO: import all primary endpoint view components to set up routes
 import ComposerAddForm from "./ComposerAddForm";
+import ComposersContainer from "./ComposersContainer";
 //import basic hooks
 import { useState, useEffect, Fragment } from "react";
 import ComposerPage from "./ComposerPage";
@@ -15,7 +16,8 @@ import AddUser from "./AddUser";
 import PropTypes from "prop-types";
 import { handleInitialData } from "../actions/shared";
 import LoadingBar from "react-redux-loading-bar";
-import { ToastContainer } from 'react-toastify';
+import Welcome from "./Welcome";
+import { ToastContainer } from "react-toastify";
 
 function App(props) {
   const [image, setImage] = useState("");
@@ -24,7 +26,7 @@ function App(props) {
   useEffect(() => {
     dispatch(handleInitialData());
     const alreadyLoggedIn = () => {
-      console.log("LOGGED IN")
+      console.log("LOGGED IN");
     };
     const logInUser = () => console.log("LOG IN");
     authedUser === null ? logInUser() : alreadyLoggedIn();
@@ -40,14 +42,12 @@ function App(props) {
             <Route path="/add-user" element={<AddUser image={image} />} />
             <Route path="/login" element={<LogIn image={image} />} />
             <Route path="/" element={<Layout />}>
-              <Route index element={<Dashboard />}/>
+              <Route index element={<Welcome />} />
+              <Route path="composers/" element={<ComposersContainer />} />
               <Route element={<RequireAuth />}>
                 <Route path="composers/create" element={<ComposerAddForm />} />
                 {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
-                <Route
-                  path="composers/:cid"
-                  element={<ComposerPage image={image} />}
-                />
+                <Route path="composers/:cid" element={<ComposerPage image={image} />} />
               </Route>
             </Route>
             <Route
@@ -71,7 +71,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = ({ authedUser, loading, composers }) => {
-  console.log("APP COMPOSERs: ", composers)
+  console.log("APP COMPOSERs: ", composers);
   return {
     loading,
     authedUser,

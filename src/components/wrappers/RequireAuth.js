@@ -1,13 +1,18 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-const RequireAuth = ({children}) => {
+const RequireAuth = ({ children }) => {
   const authedUser = useSelector((state) => state.authedUser);
   const location = useLocation();
-
+  console.log("At Require Auth : ", authedUser);
+  console.log("At Require Auth children: ", children);
   return authedUser ? (
-    children ? children : <Outlet />
+    children ? (
+      children
+    ) : (
+      <Outlet />
+    )
   ) : (
     <Navigate to="/login" replace state={{ from: location.pathname }} />
   );
@@ -15,6 +20,6 @@ const RequireAuth = ({children}) => {
 
 RequireAuth.propTypes = {
   children: PropTypes.element,
-}
+};
 
 export default RequireAuth;

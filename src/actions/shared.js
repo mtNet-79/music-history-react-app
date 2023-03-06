@@ -1,9 +1,9 @@
 import { showLoading, hideLoading } from "react-redux-loading-bar";
 import { getInitialData } from "../utils/api";
-// import { setAuthedUser } from "./authedUser";
+import { setAuthedUser } from "./authedUser";
 
 export const RECEIVE_DATA = "RECIVE_DATA";
-// const AUTHED_ID = "mthornton";
+const AUTHED_ID = "mthornton";
 
 /*
 composers and performers are the most complex datasets, 
@@ -48,8 +48,7 @@ export const handleInitialData = () => {
         compositions,
         recordings,
       }) => {
-        // dispatch(setAuthedUser(AUTHED_ID));
-        console.log("AT DISPATCH INPUT: ", composers)
+        dispatch(setAuthedUser(AUTHED_ID));  
         dispatch(
           recieveData(
             users,

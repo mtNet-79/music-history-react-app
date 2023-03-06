@@ -20,5 +20,5 @@ export default combineReducers({
   compositions,
   recordings,
   loading,
-  loadingBar: loadingBarReducer, 
+  loadingBar: loadingBarReducer
 });

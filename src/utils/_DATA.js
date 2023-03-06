@@ -18,54 +18,39 @@ let users = {
     password: "password",
     name: "Mike Thornton",
     avatarURL: "https://avatar-endpoint.herokuapp.com/api/",
-    answers: {},
-    polls: [],
+    favorite_composers: [],
+    favorite_performers: [],
   },
   sarahedo: {
     id: "sarahedo",
     password: "password123",
     name: "Sarah Edo",
     avatarURL: "https://tylermcginnis.com/would-you-rather/sarah.jpg",
-    answers: {
-      "8xf0y6ziyjabvozdd253nd": "optionOne",
-      "6ni6ok3ym7mf1p33lnez": "optionOne",
-      am8ehyc8byjqgar0jgpub9: "optionTwo",
-      loxhs1bqm25b708cmbf3g: "optionTwo",
-    },
-    polls: ["8xf0y6ziyjabvozdd253nd", "am8ehyc8byjqgar0jgpub9"],
+    favorite_composers: [],
+    favorite_performers: [],
   },
   tylermcginnis: {
     id: "tylermcginnis",
     password: "abc321",
     name: "Tyler McGinnis",
-    avatarURL: "https://tylermcginnis.com/would-you-rather/tyler.jpg",
-    answers: {
-      vthrdm985a262al8qx3do: "optionOne",
-      xj352vofupe1dqz9emx13r: "optionTwo",
-    },
-    polls: ["loxhs1bqm25b708cmbf3g", "vthrdm985a262al8qx3do"],
+    favorite_composers: [],
+    favorite_performers: [],
   },
   mtsamis: {
     id: "mtsamis",
     password: "xyz123",
     name: "Mike Tsamis",
     avatarURL: null,
-    answers: {
-      xj352vofupe1dqz9emx13r: "optionOne",
-      vthrdm985a262al8qx3do: "optionTwo",
-      "6ni6ok3ym7mf1p33lnez": "optionOne",
-    },
-    polls: ["6ni6ok3ym7mf1p33lnez", "xj352vofupe1dqz9emx13r"],
+    favorite_composers: [],
+    favorite_performers: [],
   },
   zoshikanlu: {
     id: "zoshikanlu",
     password: "pass246",
     name: "Zenobia Oshikanlu",
     avatarURL: null,
-    answers: {
-      xj352vofupe1dqz9emx13r: "optionOne",
-    },
-    polls: [],
+    favorite_composers: [],
+    favorite_performers: [],
   },
 };
 
@@ -651,48 +636,119 @@ export function _getUsers() {
   });
 }
 export function _getComposers() {
-  console.log("why not loaded", composers)
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...composers }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          composers.reduce((acc, composer) => {
+            acc[composer.id] = composer;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 
 export function _getPerformers() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...performers }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          performers.reduce((acc, performer) => {
+            acc[performer.id] = performer;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 export function _getTitles() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...titles }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          titles.reduce((acc, title) => {
+            acc[title.id] = title;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 export function _getStyles() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...styles }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          styles.reduce((acc, style) => {
+            acc[style.id] = style;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 export function _getCompositions() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...compositions }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          compositions.reduce((acc, composition) => {
+            acc[compositions.id] = composition;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 export function _getRecordings() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...recordings }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          recordings.reduce((acc, recording) => {
+            acc[recording.id] = recording;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 
 // NO STATE FOR THESE TWO, NOT INTIALLY LOADED
 export function _getNations() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...nations }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          nations.reduce((acc, nation) => {
+            acc[nation.id] = nation;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 
 export function _getPeriods() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...periods }), 1000);
+    setTimeout(
+      () =>
+        resolve(
+          periods.reduce((acc, period) => {
+            acc[period.id] = period;
+            return acc;
+          }, {})
+        ),
+      1000
+    );
   });
 }
 
