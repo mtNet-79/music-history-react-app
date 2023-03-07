@@ -5,11 +5,12 @@ import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
+import NameInput from "./NameInput";
 // import "../styles/FormView.css";
 
 const ComposerAddForm = (props) => {
   const navigate = useNavigate();
-  const [composerName, setComposerName] = useState("");
+  const [composerName, setComposerName] = useState("")
   const [birthday, setBirthday] = useState("");
   const [deathday, setDeathday] = useState("");
   const [nationality, setNationality] = useState("");
@@ -18,8 +19,7 @@ const ComposerAddForm = (props) => {
   const [compositionsArr, setCompositionsArr] = useState([]);
   const [compositionInput, setCompositionInput] = useState("");
   const [contemporariesArr, setContemporariesArr] = useState([]);
-  const [contemporaryInput, setContemporaryInput] = useState([]);
-  const [filteredComposers, setFilteredComposers] = useState([]);
+  const [contemporaryInput, setContemporaryInput] = useState("");
   const [performersArr, setPerformersArr] = useState([]);
   const [rating, setRating] = useState(0);
   const [favorite, setFavorite] = useState(false);
@@ -29,8 +29,9 @@ const ComposerAddForm = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef(null);
   const inputNameRef = useRef(null);
-  const [matchedComposer, setMatchedComposer] = useState(null);
-  const [matchedContemporary, setMatchedContemporary] = useState(null);
+  const inputContemporaryRef = useRef(null);
+  const [matchedContemporary, setMatchedContemporary] = useState("");
+  const [matchedComposer, setMatchedComposer] = useState("");
 
   const {
     dispatch,
@@ -43,8 +44,9 @@ const ComposerAddForm = (props) => {
     performers,
     userName,
     nations,
-  } = props;
-  console.log("props: ", props);
+  } = props;  
+  
+
   // handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -80,14 +82,7 @@ const ComposerAddForm = (props) => {
   };
 
   const handleBlur = (e) => {
-    if (composerName) {
-      // const matched = composers.find(
-      //   (composer) => composer.name === composerName
-      // );
-      if (matchedComposer) {
-        alert("Record already exist, please provide a unique name");
-      }
-    }
+   
     if (e.target.id === "contemporary" && e.relatedTarget === null) {
       // The user moved focus outside the window, ignore the completion text
       setMatchedContemporary(null);
@@ -100,28 +95,7 @@ const ComposerAddForm = (props) => {
     //grab vars from event target
     const { value } = event.target;
     const { id } = event.target;
-    //for composers name input
-    if (id === "name") {
-      const matchArr = composers.filter((composer) =>
-        composer.name.toLowerCase().startsWith(value.toLowerCase())
-      );
-      const top_match = matchArr.length > 0 ? matchArr[0].name : null;
-      if (top_match) {
-        const fullname = value.toLowerCase();
-        //name without the typed portion
-        const nameEnd = top_match.slice(fullname.length);
-        //setMatchedComposer to test the outer span
-        setMatchedComposer(top_match);
-        inputNameRef.current.setSelectionRange(fullname, top_match.length);
-        inputNameRef.current.style.color = "#999";
-        inputNameRef.current.style.fontWeight = "lighter";
-      } else {
-        setComposerName(value);
-        setMatchedComposer(null);
-        inputNameRef.current.style.color = "#000";
-        inputNameRef.current.style.fontWeight = "normal";
-      }
-    }
+  
     //life-dates inputs
     if (id === "birthday") setBirthday(value);
     if (id === "deathday") setDeathday(value);
@@ -161,39 +135,39 @@ const ComposerAddForm = (props) => {
         //name without the typed portion
         const completionText = matchedContemporary.slice(typedStr.length);
 
-        inputNameRef.current.setSelectionRange(
+        inputContemporaryRef.current.setSelectionRange(
           typedStr.length,
           matchedContemporary.length
         );
-        inputNameRef.current.style.color = "#999";
-        inputNameRef.current.style.fontWeight = "lighter";
+        inputContemporaryRef.current.style.color = "#999";
+        inputContemporaryRef.current.style.fontWeight = "lighter";
         // get the start and end position of the typed string
-        const startPos = inputNameRef.current.selectionStart;
-        const endPos = inputNameRef.current.selectionEnd;
+        const startPos = inputContemporaryRef.current.selectionStart;
+        const endPos = inputContemporaryRef.current.selectionEnd;
 
         // set the input value with the matched composer name and completion text
         //same as matchedContemporary, just experimenting here
         const newValue = `${typedStr}${completionText}`;
-        inputNameRef.current.value = newValue;
+        inputContemporaryRef.current.value = newValue;
         // set the cursor position to the end of the typed string
-        inputNameRef.current.setSelectionRange(startPos, endPos);
+        inputContemporaryRef.current.setSelectionRange(startPos, endPos);
 
         // set the style of the completion text
         const completionStartPos = startPos + typedStr.length;
         const completionEndPos = completionStartPos + completionText.length;
-        inputNameRef.current.setSelectionRange(
+        inputContemporaryRef.current.setSelectionRange(
           completionStartPos,
           completionEndPos
         );
-        inputNameRef.current.style.color = "#999";
-        inputNameRef.current.style.fontWeight = "lighter";
+        inputContemporaryRef.current.style.color = "#999";
+        inputContemporaryRef.current.style.fontWeight = "lighter";
         // inputNameRef.current.setSelectionRange(typedStr, matchedContemporary.length);
         // inputNameRef.current.style.color = "#999";
         // inputNameRef.current.style.fontWeight = "lighter";
       } else {
         // reset the style if there is no match
-        inputNameRef.current.style.color = "";
-        inputNameRef.current.style.fontWeight = "";
+        inputContemporaryRef.current.style.color = "";
+        inputContemporaryRef.current.style.fontWeight = "";
       }
     }
   };
@@ -283,8 +257,8 @@ const ComposerAddForm = (props) => {
         }
         // Reset the matched composer and input style
         setMatchedContemporary(null);
-        inputNameRef.current.style.color = "#000";
-        inputNameRef.current.style.fontWeight = "normal";
+        inputContemporaryRef.current.style.color = "#000";
+        inputContemporaryRef.current.style.fontWeight = "normal";
       }
     }
   };
@@ -305,7 +279,8 @@ const ComposerAddForm = (props) => {
   };
 
   const handleInputClick = () => {
-    inputRef.current.focus();
+    console.log("CHECK INPUT CLICK");
+    inputNameRef.current.focus();
   };
   const handleFavoriteClick = () => {
     setFavorite((favorite) => !favorite);
@@ -313,7 +288,6 @@ const ComposerAddForm = (props) => {
 
   return (
     <div id="add-form" className="form-wrapper">
-      <h2>Add a New Composer</h2>
       <form className="form" id="add-composer-form" onSubmit={handleSubmit}>
         <h3 className="form-heading">
           Add your composers{" "}
@@ -321,51 +295,7 @@ const ComposerAddForm = (props) => {
             <i className="fa fa-home pull-right"></i>
           </a>
         </h3>
-        <div className="mb-3">
-          <label htmlFor="name">Name</label>
-          <div
-            className="form-control"
-            onClick={handleInputClick}
-            style={{ position: "relative" }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                left: 5,
-                top: 5,
-                color: matchedComposer ? "gray" : "black",
-              }}
-            >
-              {composerName}
-            </span>
-            {matchedComposer && (
-              <span
-                style={{
-                  position: "absolute",
-                  left: 5,
-                  top: 5,
-                  color: "black",
-                  fontWeight: "bold",
-                }}
-              >
-                {matchedComposer.name.slice(0, composerName.length)}
-              </span>
-            )}
-            <input
-              type="text"
-              name="name"
-              id="name"
-              className="form-control"
-              ref={inputRef}
-              style={{ opacity: 0, position: "absolute", top: 0, left: 0 }}
-              value={composerName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              autoFocus
-            />
-          </div>
-        </div>
+        <NameInput composerName={composerName} setComposerName={setComposerName}/>
         <div className="mb-3">
           <label>Years</label>
           <div className="row">
@@ -497,6 +427,7 @@ const ComposerAddForm = (props) => {
             name="contemporaries"
             id="contemporaries"
             className="form-control"
+            ref={inputContemporaryRef}
             placeholder="Mozart"
             value={contemporaryInput}
             onKeyDown={handleKeyDown}

@@ -37,6 +37,14 @@ const Composer = (props) => {
           alt="sm-p "
           className="portrait-small"
         />
+        {authedUser && (
+        <FontAwesomeIcon
+          icon={isLiked ? faHeart : farHeart}
+          className={`ms-auto ${isLiked ? "text-danger" : ""}`}
+          role="img"
+          aria-label={isLiked ? "Liked" : "Not liked"}
+        />
+      )}
       </div>
       <div className="col-9 px-1">
         <div className="flex-grow-1">{composer.name}</div>
@@ -55,14 +63,7 @@ const Composer = (props) => {
         </div>
       </div>
 
-      {authedUser && (
-        <FontAwesomeIcon
-          icon={isLiked ? faHeart : farHeart}
-          className={`ms-auto ${isLiked ? "text-danger" : ""}`}
-          role="img"
-          aria-label={isLiked ? "Liked" : "Not liked"}
-        />
-      )}
+     
     </div>
   );
 };
