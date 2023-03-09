@@ -18,6 +18,7 @@ import { handleInitialData } from "../actions/shared";
 import LoadingBar from "react-redux-loading-bar";
 import Welcome from "./Welcome";
 import { ToastContainer } from "react-toastify";
+import { OAuthPopup } from 'OAuth2Popup';
 
 function App(props) {
   const [image, setImage] = useState("");
@@ -39,6 +40,7 @@ function App(props) {
         <Fragment>
           <ToastContainer />
           <Routes>
+            <Route element={<OAuthPopup />} path="/callback" />
             <Route path="/add-user" element={<AddUser image={image} />} />
             <Route path="/login" element={<LogIn image={image} />} />
             <Route path="/" element={<Layout />}>
