@@ -11,6 +11,7 @@ import "./styles/index.scss";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./components/App";
 import { store } from "./app/store";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 //react root html container set up ??
 const container = document.getElementById("root");
@@ -20,7 +21,15 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
-        <App />
+        <Auth0Provider
+          domain="mtdev108.us.auth0.com"
+          clientId="qCjl7oYwWHyy5TWTvCx0IRZWvq5ibDZl"
+          authorizationParams={{
+            redirect_uri: window.location.origin
+          }}
+        >
+          <App />
+        </Auth0Provider>
       </Router>
     </Provider>
   </React.StrictMode>

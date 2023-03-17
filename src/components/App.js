@@ -19,6 +19,9 @@ import LoadingBar from "react-redux-loading-bar";
 import Welcome from "./Welcome";
 import { ToastContainer } from "react-toastify";
 import { OAuthPopup } from 'OAuth2Popup';
+import { Auth0Provider } from "@auth0/auth0-react";
+
+
 
 function App(props) {
   const [image, setImage] = useState("");
