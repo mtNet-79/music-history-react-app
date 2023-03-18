@@ -5,12 +5,12 @@ import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
-import NameInput from "./NameInput";
+import NameInput from "../NameInput";
 // import "../styles/FormView.css";
 
 const ComposerAddForm = (props) => {
   const navigate = useNavigate();
-  const [composerName, setComposerName] = useState("")
+  const [composerName, setComposerName] = useState("");
   const [birthday, setBirthday] = useState("");
   const [deathday, setDeathday] = useState("");
   const [nationality, setNationality] = useState("");
@@ -44,8 +44,7 @@ const ComposerAddForm = (props) => {
     performers,
     userName,
     nations,
-  } = props;  
-  
+  } = props;
 
   // handle form submission
   const handleSubmit = (event) => {
@@ -82,7 +81,6 @@ const ComposerAddForm = (props) => {
   };
 
   const handleBlur = (e) => {
-   
     if (e.target.id === "contemporary" && e.relatedTarget === null) {
       // The user moved focus outside the window, ignore the completion text
       setMatchedContemporary(null);
@@ -95,7 +93,7 @@ const ComposerAddForm = (props) => {
     //grab vars from event target
     const { value } = event.target;
     const { id } = event.target;
-  
+
     //life-dates inputs
     if (id === "birthday") setBirthday(value);
     if (id === "deathday") setDeathday(value);
@@ -295,7 +293,10 @@ const ComposerAddForm = (props) => {
             <i className="fa fa-home pull-right"></i>
           </a>
         </h3>
-        <NameInput composerName={composerName} setComposerName={setComposerName}/>
+        <NameInput
+          composerName={composerName}
+          setComposerName={setComposerName}
+        />
         <div className="mb-3">
           <label>Years</label>
           <div className="row">

@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { handleAddComposer } from "../actions/addComposer";
+import { handleAddComposer } from "../../actions/addComposer";
 // import { handleAddPerfomer } from "../actions/addPerformer";
 import { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,21 +15,22 @@ const ComposerPage = (props) => {
   useEffect(() => {
     const validComposerlIds = Object.keys(composers);
     const cidIsValid =
-    validComposerlIds.filter((vcid) => vcid === c_id).length > 0 ? true : false;
+      validComposerlIds.filter((vcid) => vcid === c_id).length > 0
+        ? true
+        : false;
     cidIsValid ? void 0 : navigate("/error");
   }, [c_id, composers, navigate]);
 
   const usersFavorties = users[authedUser].composers;
   var hasFav = usersFavorties ? true : false;
 
-
-//   const handleComposerClick = (e) => {
-//     if (e.target.id === OPTION_ONE)
-//       dispatch(handleAnswerComposer(authedUser, pid, OPTION_ONE));
-//     else if (e.target.id === OPTION_TWO)
-//       dispatch(handleAnswerComposer(authedUser, pid, OPTION_TWO));
-//     navigate(`/questions/${pid}`);
-//   };
+  //   const handleComposerClick = (e) => {
+  //     if (e.target.id === OPTION_ONE)
+  //       dispatch(handleAnswerComposer(authedUser, pid, OPTION_ONE));
+  //     else if (e.target.id === OPTION_TWO)
+  //       dispatch(handleAnswerComposer(authedUser, pid, OPTION_TWO));
+  //     navigate(`/questions/${pid}`);
+  //   };
   return (
     <Fragment>
       <h3>Composer by {users[composers[c_id]?.author]?.name}</h3>
@@ -52,7 +53,6 @@ const ComposerPage = (props) => {
 
       <h3>Would you rather?</h3>
       <br></br>
-     
     </Fragment>
   );
 };

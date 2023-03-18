@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "./styles/index.scss";
 import { BrowserRouter as Router } from "react-router-dom";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from "./components/App";
 import { store } from "./app/store";
 
