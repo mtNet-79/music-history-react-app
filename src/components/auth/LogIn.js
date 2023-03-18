@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
-import { setAuthedUser } from "../actions/authedUser";
+import { setAuthedUser } from "../../actions/authedUser";
 import { Link } from "react-router-dom";
-import { autoComplete } from "../utils/helpers";
+import { autoComplete } from "../../utils/helpers";
 import PropTypes from "prop-types";
 
 const LogIn = (props) => {
@@ -58,53 +58,57 @@ const LogIn = (props) => {
     <div className="container">
       <img src={image} alt="description" className="mx-auto avatar" />
       {/* <div class="d-flex justify-content-center align-items-center"> */}
-        <form onSubmit={handleSubmit} className="add-new d-flex flex-column">
-          <div className="mb-3">
-          <div className="form-text autocomplete" >
+      <form onSubmit={handleSubmit} className="add-new d-flex flex-column">
+        <div className="mb-3">
+          <div className="form-text autocomplete">
             <label htmlFor="userName" className="form-label center">
               User
             </label>
-            
-              <input
-                placeholder="User Name"
-                type="text"
-                name="userName"
-                id="userName"
-                ref={userRef}
-                onChange={checkForm}
-                onClick={showUsers}
-                autoComplete="off"
-                className="form-control"
-              />
-            </div>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label center">
-              Password
-            </label>
+
             <input
-              placeholder="Password"
+              placeholder="User Name"
               type="text"
-              name="password"
-              id="password"
-              ref={passwordRef}
+              name="userName"
+              id="userName"
+              ref={userRef}
               onChange={checkForm}
+              onClick={showUsers}
+              autoComplete="off"
               className="form-control"
             />
           </div>
-          <button
-            type="submit"
-            className="btn my-btn btn-primary log-in-button"
-            disabled={!formReady}
-          >
-            Log In
-          </button>
-        </form>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label center">
+            Password
+          </label>
+          <input
+            placeholder="Password"
+            type="text"
+            name="password"
+            id="password"
+            ref={passwordRef}
+            onChange={checkForm}
+            className="form-control"
+          />
+        </div>
+        <button
+          type="submit"
+          className="btn my-btn btn-primary log-in-button"
+          disabled={!formReady}
+        >
+          Log In
+        </button>
+      </form>
 
-        <Link to="/add-user" className="btn my-btn add-new-btn btn-success" value="Add New User">
-          Add New User
-        </Link>
-      </div>
+      <Link
+        to="/add-user"
+        className="btn my-btn add-new-btn btn-success"
+        value="Add New User"
+      >
+        Add New User
+      </Link>
+    </div>
     // </div>
   );
 };

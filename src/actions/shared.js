@@ -48,7 +48,7 @@ export const handleInitialData = () => {
         compositions,
         recordings,
       }) => {
-        dispatch(setAuthedUser(AUTHED_ID));  
+        // dispatch(setAuthedUser(AUTHED_ID));  
         dispatch(
           recieveData(
             users,
