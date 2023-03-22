@@ -14,6 +14,7 @@ import App from "./components/App";
 import { store } from "./app/store";
 import { Auth0Provider } from "@auth0/auth0-react";
 
+
 //react root html container set up ??
 const container = document.getElementById("root");
 const root = createRoot(container);

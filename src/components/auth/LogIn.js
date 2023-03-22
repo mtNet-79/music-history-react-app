@@ -1,28 +1,33 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { connect } from "react-redux";
-import { setAuthedUser } from "../../actions/authedUser";
+import { connect, useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { autoComplete } from "../../utils/helpers";
+import { setAuthedUser } from '../../actions/authedUser';
 import PropTypes from "prop-types";
+import LoginWithGoogle from './LoginWithGoogle';
 
-const LogIn = (props) => {
+const LogIn = ({ image, users}) => {
   const [formReady, setFormReady] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
-  const redirectedFrom = state?.from;
-  const { dispatch, image, users, authedUser } = props;
+
+  const redirectedFrom = state?.from 
+  
+  
+  const authedUser = useSelector((state) => state.authedUser);
+  const dispatch = useDispatch();
   const userRef = useRef("");
   const passwordRef = useRef("");
 
   useEffect(() => {
     if (authedUser) {
       const { from } = redirectedFrom || { from: { pathname: "/" } };
-      console.log("from : ", from);
-      navigate(from);
+      navigate(redirectedFrom);
     }
-  });
+  }, [authedUser, navigate, redirectedFrom]);
+
 
   const checkForm = (e) => {
     if (e.target.id === "userName") autoComplete(e.target, users);
@@ -31,8 +36,11 @@ const LogIn = (props) => {
       userRef.current.value !== "" &&
       passwordRef.current.value !== "" &&
       passwordRef.current.value.length > 5
-    )
+    ) {
       setFormReady(true);
+    } else {
+      setFormReady(false);
+    }
   };
 
   const showUsers = (e) => {
@@ -41,9 +49,10 @@ const LogIn = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const user = users[userRef.current.value];
 
-    if (users[userRef.current.value]) {
-      if (users[userRef.current.value].password === passwordRef.current.value) {
+    if (user) {
+      if (user.password === passwordRef.current.value) {
         dispatch(setAuthedUser(userRef.current.value));
         redirectedFrom ? navigate(redirectedFrom) : navigate("/");
       } else {
@@ -106,21 +115,20 @@ const LogIn = (props) => {
         className="btn my-btn add-new-btn btn-success"
         value="Add New User"
       >
-        Add New User
+        Create account
       </Link>
+      <LoginWithGoogle redirectedFrom={redirectedFrom} />
     </div>
     // </div>
   );
 };
 
 LogIn.propTypes = {
-  authedUser: PropTypes.string,
   image: PropTypes.string.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ authedUser, users }, { image }) => ({
-  authedUser,
+const mapStateToProps = ({ users }, { image }) => ({
   image,
   users,
 });

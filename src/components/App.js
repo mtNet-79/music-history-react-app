@@ -1,25 +1,29 @@
 import { Routes, Route } from "react-router-dom";
-// import '../styles/App.css';
-//TODO: import all primary endpoint view components to set up routes
+
+// Primary endpoint view components
 import ComposerAddForm from "./composer/ComposerAddForm";
 import ComposersContainer from "./composer/ComposersContainer";
-import OAuth2Popup from "./auth/OAuthPopup";
-
-import LoginCode from "./auth/LoginAuthorizationCode"
-//import basic hooks
-import { useState, useEffect, Fragment } from "react";
+import AuthRedirect from "./auth/AuthRedirect";
+// import CallbackComponent from "./auth/TokenExchange";
 import ComposerPage from "./composer/ComposerPage";
 import NotFound from "./NotFound";
 import RequireAuth from "./wrappers/RequireAuth";
 import Layout from "./wrappers/Layout";
-import { connect } from "react-redux";
 import LogIn from "./auth/LogIn";
-// import Leaderboard from "./Leaderboard";
 import AddUser from "./AddUser";
-import PropTypes from "prop-types";
-import { handleInitialData } from "../actions/shared";
-import LoadingBar from "react-redux-loading-bar";
 import Welcome from "./Welcome";
+
+
+// Hooks
+import { useState, useEffect, Fragment } from "react";
+
+// Redux
+import { connect } from "react-redux";
+import { handleInitialData } from "../actions/shared";
+
+// Others
+import PropTypes from "prop-types";
+import LoadingBar from "react-redux-loading-bar";
 import { ToastContainer } from "react-toastify";
 
 
@@ -42,16 +46,15 @@ function App(props) {
       {loading ? null : (
         <Fragment>
           <ToastContainer />
-          <Routes>
-            <Route element={<OAuth2Popup />} path="/callback" />
+            <Routes>
+            <Route path="/callback" element={<AuthRedirect />} />
             <Route path="/add-user" element={<AddUser image={image} />} />
-            <Route path="/login" element={<LoginCode image={image} />} />
+            <Route path="/login" element={<LogIn image={image} />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<Welcome />} />
               <Route path="composers/" element={<ComposersContainer />} />
               <Route element={<RequireAuth />}>
                 <Route path="composers/create" element={<ComposerAddForm />} />
-                {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
                 <Route
                   path="composers/:cid"
                   element={<ComposerPage image={image} />}

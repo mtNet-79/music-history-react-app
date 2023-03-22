@@ -5,8 +5,6 @@ import PropTypes from "prop-types";
 const RequireAuth = ({ children }) => {
   const authedUser = useSelector((state) => state.authedUser);
   const location = useLocation();
-  console.log("At Require Auth : ", authedUser);
-  console.log("At Require Auth children: ", children);
   return authedUser ? (
     children ? (
       children
