@@ -24,18 +24,21 @@ export const queryToObject = (query) => {
 };
 
 
-const onSuccess = (payload) => {
-		console.log('Success', payload);
-		// Assuming the user's ID is available in the payload.
-		// Modify this line if the user ID is stored differently in the payload.
-		const userId = payload.user_id;
-		// dispatch(setAuthedUser(userId));
-		// redirectedFrom ? navigate(redirectedFrom) : navigate('/');
-	  };
+const onSuccess = (resData, dispatch, navigate, users) => {
+	const userId = resData?.id;
+	if (userId) {
+		dispatch(setAuthedUser(userId));
+		//TODO: check if the user exists, if not create it
+		//TODO: get jwt from the database?
+		const redirectedFrom = sessionStorage.getItem("redirected-from")
+		redirectedFrom ? navigate(redirectedFrom) : navigate('/');;
+	}
+};
 
 const AuthRedirect = (props) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { users, } = props
 	const {
 		Component = (
 			<div style={{ margin: '12px' }} data-testid="popup-loading">
@@ -52,6 +55,7 @@ const AuthRedirect = (props) => {
 			...queryToObject(window.location.hash.split('#')[1]),
 		};
 		const state_from_payload = payload?.state;
+		console.log("payload: ", payload);
 		console.log("state_from_payload: ", state_from_payload);
 		const error = payload?.error;
 		const code = new URLSearchParams(window.location.search).get('code');
@@ -89,32 +93,26 @@ const AuthRedirect = (props) => {
 						redirect_uri: redirectUri,
 					  },
 					});
-					console.log("THE response: ", response);
 					// Process the response data
 					const userData = response.data;
-					console.log(userData);
+					// console.log(userData);
 
 					if (response.status !== 200) {
+						console.log("error bad status code")
 						// setUI({
 						//   loading: false,
 						//   error: "Failed to exchange code for token",
 						// });
 						
-				} else {
+					} else {
 						
 						// setUI({
 						//   loading: false,
 						//   error: null,
 						// });
-						const userId = response.data?.id;
-						if (userId) {
-							dispatch(setAuthedUser(userId));
-							const redirectedFrom = sessionStorage.getItem("redirected-from")
-      						redirectedFrom ? navigate(redirectedFrom) : navigate('/');;
-						  }
-						// if (onSuccess) {
-						//   await onSuccess(payload);
-						// }
+						onSuccess(response.data, dispatch, navigate)
+						
+						
 					  }
    
 				} catch (error) {

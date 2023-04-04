@@ -12,16 +12,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/exchange_for_token', async (req, res) => {
-  console.log("Request received at /exchange_for_token");
   try {
     const clientId = req.query.client_id;
     const code = req.query.code;
     const redirectUri = req.query.redirect_uri;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    console.log("clientId: ", clientId);
-    console.log("code: ", code);
-    console.log("redirectUri: ", redirectUri);
-    console.log("clientSecret: ", clientSecret);
+    // console.log("clientId: ", clientId);
+    // console.log("code: ", code);
+    // console.log("redirectUri: ", redirectUri);
+    // console.log("clientSecret: ", clientSecret);
 
     const googleResponse = await axios.post(
       'https://oauth2.googleapis.com/token',
@@ -36,7 +35,7 @@ app.post('/exchange_for_token', async (req, res) => {
         },
       }
     );
-   console.log("googleResponse: ", googleResponse)
+  //  console.log("googleResponse: ", googleResponse.data)
     const userInfoResponse = await axios.get(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       {
@@ -45,7 +44,7 @@ app.post('/exchange_for_token', async (req, res) => {
         },
       }
     );
-
+     
     res.status(200).json(userInfoResponse.data);
   } catch (error) {
     console.error(error);

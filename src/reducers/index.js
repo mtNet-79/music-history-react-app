@@ -7,8 +7,10 @@ import recordings from "./recordings";
 import users from "./users";
 import authedUser from "./authedUser";
 import loading from "./loading";
+import logo from "./logo";
 import { combineReducers } from "redux";
 import { loadingBarReducer } from "react-redux-loading-bar";
+
 
 export default combineReducers({
   users,
@@ -20,5 +22,6 @@ export default combineReducers({
   compositions,
   recordings,
   loading,
+  logo,
   loadingBar: loadingBarReducer
 });

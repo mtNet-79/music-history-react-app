@@ -19,6 +19,7 @@ const generateState = () => {
   const randomState = String.fromCharCode.apply(null, array);
   return randomState;
 };
+
 const objectToQuery = (object) => {
   return new URLSearchParams(object).toString();
 };
@@ -151,6 +152,41 @@ const use0Auth2 = (props) => {
       );
       
       console.log("windw now: ", window.location)
+      async function handleMessageListener(message) {
+        console.log("HERE")
+        try {
+          // if (message.origin !== expectedOAuthServerDomain) {
+          //   // Ignore messages from unexpected origins
+          //   return;
+          // }
+          const type = message && message.data && message.data.type;
+          console.log("IN TRY type: ", message);
+          if (type === OAUTH_RESPONSE) {
+            const errorMaybe = message && message.data && message.data.error;
+            console.log("errorMaybe: ", errorMaybe)
+            if (errorMaybe) {
+              // setUI({
+              //   loading: false,
+              //   error: errorMaybe || "Unknown Error",
+              // });
+            } else {
+              let payload = message?.data?.payload;
+             
+
+                console.log("payload: ", payload);
+
+            
+            }
+          } else return;
+        } catch (genericError) {
+          console.error(genericError);
+         
+        } finally {
+          console.log("at the end");
+          // Clear stuff ...
+          // cleanup(intervalRef, popupRef, handleMessageListener);
+        }
+      }
     // 4. Begin interval to check if popup was closed forcefully by the user
     intervalRef.current = setInterval(() => {
       const popupClosed =
@@ -173,7 +209,7 @@ const use0Auth2 = (props) => {
 
     // Remove listener(s) on unmount
     return () => {
-      // window.removeEventListener("message", handleMessageListener);
+      window.removeEventListener("message", handleMessageListener);
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [
@@ -182,8 +218,9 @@ const use0Auth2 = (props) => {
     redirectUri,
     scope,
     responseType,
-    onSuccess,
-    onError,
+    // onSuccess,
+    // onError,
+    redirectedFrom,
     // setUI,
     // setData,
   ]);

@@ -5,12 +5,13 @@ import { setAuthedUser } from "../actions/authedUser";
 import PropTypes from "prop-types";
 import "../styles/nav.scss";
 
-const Nav = (props) => {
-  // console.log("nav props: ", props);
-  const { dispatch, users, authedUser } = props;
+const Nav = ({ dispatch, users, authedUser, logo}) => {
+
   const user = users[authedUser];
   const location = useLocation();
   const currentEndpoint = location.pathname;
+  console.log("Nav curr endpoint: ", currentEndpoint);
+  // const imageUrl = 'https://s3.wasabisys.com/music-history-images/musichistorylogo';
 
   const hanldeLogOutOnClick = () => {
     dispatch(setAuthedUser());
@@ -32,7 +33,10 @@ const Nav = (props) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <NavLink to="/" className="navbar-brand">
-            🎻
+          {logo 
+            ? <img src={logo} alt="Music History Logo" />
+            : '🎻'
+          } 
           </NavLink>
         </div>
 
@@ -119,7 +123,7 @@ const Nav = (props) => {
                   aria-expanded="false"
                 >
                   <img
-                    src={props.users[authedUser].avatarURL}
+                    src={users[authedUser].avatarURL}
                     alt="avatar"
                     className="avatar-small"
                   />
@@ -169,9 +173,10 @@ Nav.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ authedUser, users }) => ({
+const mapStateToProps = ({ authedUser, users, logo }) => ({
   authedUser,
   users,
+  logo,
 });
 
 export default connect(mapStateToProps)(Nav);

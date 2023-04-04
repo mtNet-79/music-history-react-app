@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 const Welcome = (props) => {
   const { authedUser } = props;
 
+
   return (
     <section role="region" aria-label="Main Content">
       <div className="container">

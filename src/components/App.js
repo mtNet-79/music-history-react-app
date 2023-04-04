@@ -20,11 +20,13 @@ import { useState, useEffect, Fragment } from "react";
 // Redux
 import { connect } from "react-redux";
 import { handleInitialData } from "../actions/shared";
+import { handleFetchLogo } from '../actions/fetchLogo';
 
 // Others
 import PropTypes from "prop-types";
 import LoadingBar from "react-redux-loading-bar";
 import { ToastContainer } from "react-toastify";
+
 
 
 function App(props) {
@@ -33,10 +35,11 @@ function App(props) {
 
   useEffect(() => {
     dispatch(handleInitialData());
+    dispatch(handleFetchLogo());
     const alreadyLoggedIn = () => {
-      console.log("LOGGED IN");
+      console.log("YOU ARE LOGGED IN");
     };
-    const logInUser = () => console.log("LOG IN");
+    const logInUser = () => console.log("LOG IN REQUIRED");
     authedUser === null ? logInUser() : alreadyLoggedIn();
   }, [dispatch, authedUser]);
 
@@ -82,7 +85,6 @@ App.propTypes = {
 };
 
 const mapStateToProps = ({ authedUser, loading, composers }) => {
-  console.log("APP COMPOSERs: ", composers);
   return {
     loading,
     authedUser,
