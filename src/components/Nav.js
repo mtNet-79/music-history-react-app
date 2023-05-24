@@ -1,17 +1,59 @@
 import { NavLink, Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { setAuthedUser } from "../actions/authedUser";
 import PropTypes from "prop-types";
 import "../styles/nav.scss";
 
-const Nav = ({ dispatch, users, authedUser, logo}) => {
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
 
+async function handleFetchLogo(setLogoData) {
+  try {
+    // Fetch the pre-signed URL from the backend
+    const response = await fetch('http:localhost:5001/presigned-url/musichistorylogo.png');
+    console.log("response ", response)
+    const data = await response.json();
+    const presignedUrl = data.url;
+
+    // Fetch the image using the pre-signed URL
+    const imageResponse = await fetch(presignedUrl);
+    const imageData = await imageResponse.arrayBuffer();
+
+    // Convert the ArrayBuffer to a base64 string
+    const imageBase64 = `data:image/png;base64,${arrayBufferToBase64(imageData)}`;
+
+    // Set the local state with the base64 image data
+    setLogoData(imageBase64);
+  } catch (error) {
+    console.error('Error fetching image from Wasabi S3 bucket:', error);
+  }
+}
+
+
+
+const Nav = ({ dispatch, users, authedUser}) => {
+
+  const [logoData, setLogoData] = useState(null);
+  // const [logoSize, setLogoSize] = useState("50px");
   const user = users[authedUser];
   const location = useLocation();
   const currentEndpoint = location.pathname;
   console.log("Nav curr endpoint: ", currentEndpoint);
   // const imageUrl = 'https://s3.wasabisys.com/music-history-images/musichistorylogo';
+
+  useEffect(() => {
+    handleFetchLogo(setLogoData);
+  }, []);
+  
 
   const hanldeLogOutOnClick = () => {
     dispatch(setAuthedUser());
@@ -33,8 +75,8 @@ const Nav = ({ dispatch, users, authedUser, logo}) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <NavLink to="/" className="navbar-brand">
-          {logo 
-            ? <img src={logo} alt="Music History Logo" />
+          {logoData 
+            ? <img src={logoData} alt="Music History Logo" style={{ width: "50px", height: "50px" }}/>
             : '🎻'
           } 
           </NavLink>
@@ -173,10 +215,9 @@ Nav.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ authedUser, users, logo }) => ({
+const mapStateToProps = ({ authedUser, users }) => ({
   authedUser,
   users,
-  logo,
 });
 
 export default connect(mapStateToProps)(Nav);

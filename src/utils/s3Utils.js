@@ -1,4 +1,6 @@
 // src/utils/s3Utils.js
+//CODE NOT USED CURRENTOY IN THE APPLICATION
+//will create a presigned url that does not require aws creds to use
 import AWS from 'aws-sdk';
 
 export const generatePresignedUrl = async (bucket, key) => {

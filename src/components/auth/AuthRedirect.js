@@ -10,6 +10,7 @@ const OAUTH_RESPONSE = "react-use-oauth2-response";
 const exchangeCodeForTokenServerURL = process.env.REACT_APP_EXCHANGE_FOR_TOKEN_URL;
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const redirectUri = process.env.REACT_APP_AUTH0_CALLBACK_URL;
+
 console.log("clientId: ", clientId);
 const checkState = (receivedState) => {
 	console.log("CHecked STATE: ", receivedState)
