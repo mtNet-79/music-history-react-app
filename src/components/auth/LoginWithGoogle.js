@@ -22,7 +22,6 @@ const LoginWithGoogle = ({ redirectedFrom }) => {
 		responseType: 'code',
 		exchangeCodeForTokenServerURL: 'https://localhost:5001/exchange_for_token',
 		exchangeCodeForTokenMethod: 'POST',
-		scope: 'profile email',
 		onSuccess: (payload) => console.log('Success', payload),
 		onError: (error_) => console.log('Error', error_),
 		redirectedFrom,

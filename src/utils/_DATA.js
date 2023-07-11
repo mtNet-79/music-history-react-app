@@ -13,6 +13,19 @@ let generateRandomAvatar = () => {
 };
 
 let users = {
+  rando: {
+    id: 123,
+    oauth_provider: "google",
+    oauth_id: 123,
+    email: "rando@gmail.com",
+    first_name: "rando",
+    last_name: "randy",
+    avatar_url: null,
+    role: "user",
+    created_at: '2019-11-12 18:23:30.239216',
+    favorite_composers: null,
+    favorite_performers: null
+  },
   mthornton: {
     id: "mthornton",
     password: "password",

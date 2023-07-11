@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import "../styles/nav.scss";
 
 function arrayBufferToBase64(buffer) {
-  let binary = '';
+  let binary = "";
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
   for (let i = 0; i < len; i++) {
@@ -17,43 +17,41 @@ function arrayBufferToBase64(buffer) {
 }
 
 async function handleFetchLogo(setLogoData) {
-  try {
-    // Fetch the pre-signed URL from the backend
-    const response = await fetch('http:localhost:5001/presigned-url/musichistorylogo.png');
-    console.log("response ", response)
-    const data = await response.json();
-    const presignedUrl = data.url;
+  // try {
+  // Fetch the pre-signed URL from the backend
+  console.log("MADe it here");
+  const response = await fetch(
+    "http://127.0.0.1:5001/presigned-url/MusicHistoryLogo.jpeg"
+  );
+  console.log("response ", response);
+  const data = await response.json();
+  const presignedUrl = data.url;
 
-    // Fetch the image using the pre-signed URL
-    const imageResponse = await fetch(presignedUrl);
-    const imageData = await imageResponse.arrayBuffer();
+  // Fetch the image using the pre-signed URL
+  const imageResponse = await fetch(presignedUrl);
+  const imageData = await imageResponse.arrayBuffer();
 
-    // Convert the ArrayBuffer to a base64 string
-    const imageBase64 = `data:image/png;base64,${arrayBufferToBase64(imageData)}`;
+  // Convert the ArrayBuffer to a base64 string
+  const imageBase64 = `data:image/png;base64,${arrayBufferToBase64(imageData)}`;
 
-    // Set the local state with the base64 image data
-    setLogoData(imageBase64);
-  } catch (error) {
-    console.error('Error fetching image from Wasabi S3 bucket:', error);
-  }
+  // Set the local state with the base64 image data
+  setLogoData(imageBase64);
+  // } catch (error) {
+  //   console.error('Error fetching image from Wasabi S3 bucket:', error);
+  // }
 }
 
-
-
-const Nav = ({ dispatch, users, authedUser}) => {
-
+const Nav = ({ dispatch, users, authedUser }) => {
   const [logoData, setLogoData] = useState(null);
   // const [logoSize, setLogoSize] = useState("50px");
   const user = users[authedUser];
   const location = useLocation();
   const currentEndpoint = location.pathname;
-  console.log("Nav curr endpoint: ", currentEndpoint);
   // const imageUrl = 'https://s3.wasabisys.com/music-history-images/musichistorylogo';
 
   useEffect(() => {
     handleFetchLogo(setLogoData);
   }, []);
-  
 
   const hanldeLogOutOnClick = () => {
     dispatch(setAuthedUser());
@@ -75,10 +73,15 @@ const Nav = ({ dispatch, users, authedUser}) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <NavLink to="/" className="navbar-brand">
-          {logoData 
-            ? <img src={logoData} alt="Music History Logo" style={{ width: "50px", height: "50px" }}/>
-            : '🎻'
-          } 
+            {logoData ? (
+              <img
+                src={logoData}
+                alt="Music History Logo"
+                style={{ width: "50px", height: "50px" }}
+              />
+            ) : (
+              "🎻"
+            )}
           </NavLink>
         </div>
 

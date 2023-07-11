@@ -20,7 +20,7 @@ import { useState, useEffect, Fragment } from "react";
 // Redux
 import { connect } from "react-redux";
 import { handleInitialData } from "../actions/shared";
-import { handleFetchLogo } from '../actions/fetchLogo';
+// import { handleFetchLogo } from '../actions/fetchLogo';
 
 // Others
 import PropTypes from "prop-types";
@@ -35,7 +35,7 @@ function App(props) {
 
   useEffect(() => {
     dispatch(handleInitialData());
-    dispatch(handleFetchLogo());
+    // dispatch(handleFetchLogo());
     const alreadyLoggedIn = () => {
       console.log("YOU ARE LOGGED IN");
     };

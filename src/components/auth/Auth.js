@@ -1,15 +1,14 @@
 // useOAuth2.js
 import { useCallback, useState, useRef } from "react";
 import useLocalStorageState from "use-local-storage-state";
-
+//DEFINE GLOBALS
 const OAUTH_STATE_KEY = "react-use-oauth2-state-key";
 const POPUP_HEIGHT = 700;
 const POPUP_WIDTH = 600;
 const OAUTH_RESPONSE = "react-use-oauth2-response";
 const DEFAULT_EXCHANGE_CODE_FOR_TOKEN_METHOD = "POST";
 
-
-// https://medium.com/@dazcyril/generating-cryptographic-random-state-in-javascript-in-the-browser-c538b3daae50
+//CREATE A UNIQUE STATE VAR TO CHECK ENSURE CORRECT USER SENT AND NO CRSS ATACKS
 const generateState = () => {
   const validChars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -29,27 +28,32 @@ const queryToObject = (query) => {
   return Object.fromEntries(parameters.entries());
 };
 
-// const saveState = (state) => {
-//   console.log("Stored state from view : ", state)
-//   sessionStorage.setItem(OAUTH_STATE_KEY, state);
-// };
-const saveState = (state, redirectedFrom) => {  
+/*
+SAVE AUTH STATE VARIABLE IN SESSION STORAGE 
+this allows the state to be checked with return from google 
+if redirects occur and will also be avialable in child windows
+a popup opens
+*/
+const saveState = (state, redirectedFrom) => {
   sessionStorage.setItem(OAUTH_STATE_KEY, state);
   // Save the pathname to sessionStorage if it exists
-  console.log("redirectedFrom: ", redirectedFrom);
+  console.log("redirectedFrom from Auth.js line 40: ", redirectedFrom);
   if (redirectedFrom) {
-    console.log("how did I GET IN HERE!?")
-    sessionStorage.setItem('redirected-from', redirectedFrom);
+    console.log("how did I GET IN HERE!?");
+    sessionStorage.setItem("redirected-from", redirectedFrom);
   }
 };
+/*
 
+why remove state ???
+*/
 const removeState = () => {
   sessionStorage.removeItem(OAUTH_STATE_KEY);
 };
 
 const openPopup = (url) => {
-  console.log("popup url : ", url);
-  console.log("window :", window.location)
+  // console.log("popup url : ", url);
+  // console.log("window :", window.location)
   // To fix issues with window.screen in multi-monitor setups, the easier option is to
   // center the pop-up over the parent window.
   const top = window.outerHeight / 2 + window.screenY - POPUP_HEIGHT / 2;
@@ -59,7 +63,6 @@ const openPopup = (url) => {
     "OAuth2 Popup",
     `height=${POPUP_HEIGHT},width=${POPUP_WIDTH},top=${top},left=${left}`
   );
-  console.log("popup window:", popup);
   return popup;
 };
 
@@ -68,21 +71,21 @@ const closePopup = (popupRef) => {
   popupRef.current?.close();
 };
 
-// const cleanup = (intervalRef, popupRef, handleMessageListener) => {
-//   clearInterval(intervalRef.current);
-//   closePopup(popupRef);
-//   removeState();
-//   window.removeEventListener("message", handleMessageListener);
-// };
-
+const cleanup = (intervalRef, popupRef, handleMessageListener) => {
+  clearInterval(intervalRef.current);
+  closePopup(popupRef);
+  removeState();
+  window.removeEventListener("message", handleMessageListener);
+};
+/*GENERATES THE GOOGLE AUTH URL WITH CORRECTS PARAMS*/
 const enhanceAuthorizeUrl = (
   authorizeUrl,
   clientId,
   redirectUri,
   scope,
   state,
-  responseType,
-  extraQueryParametersRef
+  responseType
+  // extraQueryParametersRef
 ) => {
   const query = objectToQuery({
     response_type: responseType,
@@ -90,16 +93,14 @@ const enhanceAuthorizeUrl = (
     redirect_uri: redirectUri,
     scope,
     state,
-    ...extraQueryParametersRef.current,
+    // ...extraQueryParametersRef.current,
   });
 
   return `${authorizeUrl}?${query}`;
 };
 
-
-
- 
-  
+/*THE PRIMARY FUNCTION OF THIS PAGE WHICH IS TO PROVIDE
+   A MEMOIZED CALLBACK HOOK TO OTHER COMPONENTS */
 const use0Auth2 = (props) => {
   const {
     authorizeUrl,
@@ -107,16 +108,16 @@ const use0Auth2 = (props) => {
     redirectUri,
     scope,
     responseType,
-    extraQueryParameters = {},
+    // extraQueryParameters = {},
     onSuccess,
     onError,
     redirectedFrom,
   } = props;
 
-  const extraQueryParametersRef = useRef(extraQueryParameters);
+  // const extraQueryParametersRef = useRef(extraQueryParameters);
   const popupRef = useRef();
   const intervalRef = useRef();
-  // const [{ loading, error }, setUI] = useState({ loading: false, error: null });
+  const [{ loading, error }, setUI] = useState({ loading: false, error: null });
   // const [data, setData] = useLocalStorageState(
   //   `${responseType}-${authorizeUrl}-${clientId}-${scope}`,
   //   {
@@ -124,81 +125,87 @@ const use0Auth2 = (props) => {
   //   }
   // );
 
-
+  /*MEMOIZED CALLBACK FUNC */
   const getAuth = useCallback(() => {
-    
     // 1. Init
-    // setUI({
-    //   loading: true,
-    //   error: null,
-    // });
+    setUI({
+      loading: true,
+      error: null,
+    });
 
     // 2. Generate and save state
     const state = generateState();
     // redirectedFrom = redirectedFrom ? redirectedFrom : "/"
     saveState(state, redirectedFrom);
-    console.log("get state: ", sessionStorage.getItem("redirected-from"))
-      // 3. Open popup
+    console.log(
+      "get redirected from session storage: ",
+      sessionStorage.getItem("redirected-from")
+    );
+    console.log(
+      "get state from session storage: ",
+      sessionStorage.getItem("OAUTH_STATE_KEY")
+    );
+    // 3. Open popup
     popupRef.current = openPopup(
-        enhanceAuthorizeUrl(
-          authorizeUrl,
-          clientId,
-          redirectUri,
-          scope,
-          state,
-          responseType,
-          extraQueryParametersRef
-        )
-      );
-      
-      console.log("windw now: ", window.location)
-      async function handleMessageListener(message) {
-        console.log("HERE")
-        try {
-          // if (message.origin !== expectedOAuthServerDomain) {
-          //   // Ignore messages from unexpected origins
-          //   return;
-          // }
-          const type = message && message.data && message.data.type;
-          console.log("IN TRY type: ", message);
-          if (type === OAUTH_RESPONSE) {
-            const errorMaybe = message && message.data && message.data.error;
-            console.log("errorMaybe: ", errorMaybe)
-            if (errorMaybe) {
-              // setUI({
-              //   loading: false,
-              //   error: errorMaybe || "Unknown Error",
-              // });
-            } else {
-              let payload = message?.data?.payload;
-             
+      enhanceAuthorizeUrl(
+        authorizeUrl,
+        clientId,
+        redirectUri,
+        scope,
+        state,
+        responseType
+        // extraQueryParametersRef
+      )
+    );
 
-                console.log("payload: ", payload);
+    console.log("windw after openPopup assigned to ref: ", window.location);
+    async function handleMessageListener(message) {
+      console.log("HERE");
+      try {
+        // if (message.origin !== expectedOAuthServerDomain) {
+        //   // Ignore messages from unexpected origins
+        //   return;
+        // }
+        const type = message && message.data && message.data.type;
+        console.log("IN TRY type: ", message);
+        if (type === OAUTH_RESPONSE) {
+          const errorMaybe = message && message.data && message.data.error;
+          console.log("errorMaybe: ", errorMaybe);
+          if (errorMaybe) {
+            setUI({
+              loading: false,
+              error: errorMaybe || "Unknown Error",
+            });
+          } else {
+            let payload = message?.data?.payload;
 
-            
-            }
-          } else return;
-        } catch (genericError) {
-          console.error(genericError);
-         
-        } finally {
-          console.log("at the end");
-          // Clear stuff ...
-          // cleanup(intervalRef, popupRef, handleMessageListener);
-        }
+            console.log("payload: ", payload);
+          }
+        } else return;
+      } catch (genericError) {
+        console.error(genericError);
+      } finally {
+        console.log("at the end");
+        // Clear stuff ...
+        // cleanup(intervalRef, popupRef, handleMessageListener);
       }
+    }
+    let nount = 0;
     // 4. Begin interval to check if popup was closed forcefully by the user
     intervalRef.current = setInterval(() => {
+      nount++;
+      console.log("is interval working:", nount);
+      console.log("popRef.current: ", popupRef.current.window.closed);
       const popupClosed =
         !popupRef.current ||
         !popupRef.current.window ||
         popupRef.current.window.closed;
       if (popupClosed) {
         // Popup was closed before completing auth...
-        // setUI((ui) => ({
-        //   ...ui,
-        //   loading: false,
-        // }));
+        setUI((ui) => ({
+          ...ui,
+          loading: false,
+        }));
         console.warn(
           "Warning: Popup was closed before completing authentication."
         );
@@ -210,7 +217,7 @@ const use0Auth2 = (props) => {
     // Remove listener(s) on unmount
     return () => {
       window.removeEventListener("message", handleMessageListener);
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      // if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [
     authorizeUrl,
@@ -221,7 +228,7 @@ const use0Auth2 = (props) => {
     // onSuccess,
     // onError,
     redirectedFrom,
-    // setUI,
+    setUI,
     // setData,
   ]);
   return { getAuth };
