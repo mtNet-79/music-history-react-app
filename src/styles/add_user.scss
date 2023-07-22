@@ -1,0 +1,71 @@
+// Define Variables
+$input-padding-y: 0.375rem;
+$input-padding-x: 0.75rem;
+$input-font-family: 'Arial', sans-serif;
+$input-font-size: 1rem;
+$input-font-weight: 400;
+$input-line-height: 1.5;
+$input-color: #212529;
+$input-bg: #fff;
+$input-outline: 0;
+$input-border-width: 1px;
+$input-border-color: #ced4da;
+$input-border-radius: 0.375rem;
+$input-box-shadow: none;
+$input-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+$input-focus-color: #212529;
+$input-focus-bg: #fff;
+$input-focus-border-color: #86b7fe;
+$input-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+$justify-content-space-between: space-between;
+
+// Input styles
+.custom-input {
+  display: block;
+  width: 100%;
+  padding: $input-padding-y $input-padding-x;
+  font-family: $input-font-family;
+  font-size: $input-font-size;
+  font-weight: $input-font-weight;
+  line-height: $input-line-height;
+  color: $input-color;
+  background-color: $input-bg;
+  border: $input-border-width solid $input-border-color;
+  border-radius: $input-border-radius;
+  box-shadow: $input-box-shadow;
+  transition: $input-transition;
+  justify-content: $justify-content-space-between;
+
+  &:focus-within {
+    color: $input-focus-color;
+    background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    box-shadow: $input-focus-box-shadow;
+    outline: $input-outline;
+  }
+
+ 
+}
+
+// File input styles
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+// .custom-input *:focus {
+//     outline: none;
+//     border: none;
+//     box-shadow: none;
+// }
+
+
+

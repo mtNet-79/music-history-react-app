@@ -19,11 +19,10 @@ function arrayBufferToBase64(buffer) {
 async function handleFetchLogo(setLogoData) {
   // try {
   // Fetch the pre-signed URL from the backend
-  console.log("MADe it here");
   const response = await fetch(
-    "http://127.0.0.1:5001/presigned-url/MusicHistoryLogo.jpeg"
+    "http://127.0.0.1:5001/presigned-url/mt-music-history/MusicHistoryLogo.jpeg"
   );
-  console.log("response ", response);
+  
   const data = await response.json();
   const presignedUrl = data.url;
 

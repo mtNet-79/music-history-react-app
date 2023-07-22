@@ -1,6 +1,7 @@
-import { showLoading, hideLoading } from "react-redux-loading-bar";
+import { hideLoading } from "react-redux-loading-bar";
+// import { showLoading } from "react-redux-loading-bar";
 import { saveUser } from "../utils/api";
-import { setAuthedUser } from "./authedUser";
+// import { setAuthedUser } from "./authedUser";
 
 export const ADD_USER = "ADD_USER";
 
@@ -9,14 +10,14 @@ export const addUser = (user) => ({
   user,
 });
 
-export const handleAddUser = ({fullName, image, password, userName, users}) => {
+export const handleAddUserTest = ({fullName, image, password, userName, users}) => {
    
   return (dispatch) => {
-    dispatch(showLoading());
+    // dispatch(showLoading());
     return saveUser({ fullName, image, password, userName, users })
       .then((user) => {
         dispatch(addUser(user));
-        dispatch(setAuthedUser(user.id));
+        // dispatch(setAuthedUser(user.id));
       })
       .then(() => dispatch(hideLoading()))
       .catch((err) => {
@@ -25,3 +26,10 @@ export const handleAddUser = ({fullName, image, password, userName, users}) => {
       });
   };
 };
+export const handleAddUser = (user) => {
+  return (dispatch) => {
+    dispatch(addUser(user));
+    // dispatch(setAuthedUser(user.id));
+    dispatch(hideLoading())
+  }
+}

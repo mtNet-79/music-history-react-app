@@ -10,7 +10,7 @@ import NotFound from "./NotFound";
 import RequireAuth from "./wrappers/RequireAuth";
 import Layout from "./wrappers/Layout";
 import LogIn from "./auth/LogIn";
-import AddUser from "./AddUser";
+import AddUser from "./auth/AddUser";
 import Welcome from "./Welcome";
 
 
@@ -25,8 +25,9 @@ import { handleInitialData } from "../actions/shared";
 // Others
 import PropTypes from "prop-types";
 import LoadingBar from "react-redux-loading-bar";
+//Library for notification pop-ups
 import { ToastContainer } from "react-toastify";
-
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App(props) {

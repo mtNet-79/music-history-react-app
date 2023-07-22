@@ -1,5 +1,7 @@
 import use0Auth2 from './Auth';
 
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 const LoginWithGoogle = ({ redirectedFrom }) => {
 	// const navigate = useNavigate();
 	// const dispatch = useDispatch();
@@ -16,14 +18,12 @@ const LoginWithGoogle = ({ redirectedFrom }) => {
 
 	const { getAuth } = use0Auth2({
 		authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-		clientId: '220254089568-e4d4f55nup3ulpqu8netkk6dhpghmd3l.apps.googleusercontent.com',
+		clientId: clientId,
 		redirectUri: `${document.location.origin.replace(/^http:/, 'https:')}/callback`,
 		scope: 'email profile',
 		responseType: 'code',
-		exchangeCodeForTokenServerURL: 'https://localhost:5001/exchange_for_token',
+		exchangeCodeForTokenServerURL: 'https://localhost:5001/auth/google/token',
 		exchangeCodeForTokenMethod: 'POST',
-		onSuccess: (payload) => console.log('Success', payload),
-		onError: (error_) => console.log('Error', error_),
 		redirectedFrom,
 	});
 	// console.log("data :", data)

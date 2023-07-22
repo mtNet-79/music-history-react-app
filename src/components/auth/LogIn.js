@@ -7,16 +7,20 @@ import { setAuthedUser } from '../../actions/authedUser';
 import PropTypes from "prop-types";
 import LoginWithGoogle from './LoginWithGoogle';
 
-const LogIn = ({ image, users}) => {
+
+const LogIn = ({ image }) => {
   const [formReady, setFormReady] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
 
   const redirectedFrom = state?.from 
   
-  
+  const users = useSelector(state => state.users);
   const authedUser = useSelector((state) => state.authedUser);
+
   const dispatch = useDispatch();
   const userRef = useRef("");
   const passwordRef = useRef("");
@@ -49,6 +53,7 @@ const LogIn = ({ image, users}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    //need to find user in the redux store (not sure what value needs to go here)
     const user = users[userRef.current.value];
 
     if (user) {
@@ -56,10 +61,11 @@ const LogIn = ({ image, users}) => {
         dispatch(setAuthedUser(userRef.current.value));
         redirectedFrom ? navigate(redirectedFrom) : navigate("/");
       } else {
-        alert("Wrong password. Try again.");
+        setErrorMessage("Wrong password. Try again.");
       }
     } else {
-      alert("This account does not exist. Add New User.");
+      setErrorMessage("This account does not exist. Add New User.");
+      navigate('/add-user');
     }
   };
 
@@ -68,10 +74,11 @@ const LogIn = ({ image, users}) => {
       <img src={image} alt="description" className="mx-auto avatar" />
       {/* <div class="d-flex justify-content-center align-items-center"> */}
       <form onSubmit={handleSubmit} className="add-new d-flex flex-column">
+      {errorMessage && <p>{errorMessage}</p>}
         <div className="mb-3">
-          <div className="form-text autocomplete">
+         
             <label htmlFor="userName" className="form-label center">
-              User
+              User Name
             </label>
 
             <input
@@ -85,7 +92,7 @@ const LogIn = ({ image, users}) => {
               autoComplete="off"
               className="form-control"
             />
-          </div>
+         
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label center">
@@ -125,12 +132,7 @@ const LogIn = ({ image, users}) => {
 
 LogIn.propTypes = {
   image: PropTypes.string.isRequired,
-  users: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ users }, { image }) => ({
-  image,
-  users,
-});
+export default LogIn;
 
-export default connect(mapStateToProps)(LogIn);

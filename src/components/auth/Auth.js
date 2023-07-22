@@ -1,12 +1,12 @@
 // useOAuth2.js
 import { useCallback, useState, useRef } from "react";
-import useLocalStorageState from "use-local-storage-state";
+// import useLocalStorageState from "use-local-storage-state";
 //DEFINE GLOBALS
 const OAUTH_STATE_KEY = "react-use-oauth2-state-key";
 const POPUP_HEIGHT = 700;
 const POPUP_WIDTH = 600;
-const OAUTH_RESPONSE = "react-use-oauth2-response";
-const DEFAULT_EXCHANGE_CODE_FOR_TOKEN_METHOD = "POST";
+// const OAUTH_RESPONSE = "react-use-oauth2-response";
+// const DEFAULT_EXCHANGE_CODE_FOR_TOKEN_METHOD = "POST";
 
 //CREATE A UNIQUE STATE VAR TO CHECK ENSURE CORRECT USER SENT AND NO CRSS ATACKS
 const generateState = () => {
@@ -23,10 +23,10 @@ const objectToQuery = (object) => {
   return new URLSearchParams(object).toString();
 };
 
-const queryToObject = (query) => {
-  const parameters = new URLSearchParams(query);
-  return Object.fromEntries(parameters.entries());
-};
+// const queryToObject = (query) => {
+//   const parameters = new URLSearchParams(query);
+//   return Object.fromEntries(parameters.entries());
+// };
 
 /*
 SAVE AUTH STATE VARIABLE IN SESSION STORAGE 
@@ -39,7 +39,6 @@ const saveState = (state, redirectedFrom) => {
   // Save the pathname to sessionStorage if it exists
   console.log("redirectedFrom from Auth.js line 40: ", redirectedFrom);
   if (redirectedFrom) {
-    console.log("how did I GET IN HERE!?");
     sessionStorage.setItem("redirected-from", redirectedFrom);
   }
 };
@@ -52,7 +51,6 @@ const removeState = () => {
 };
 
 const openPopup = (url) => {
-  // console.log("popup url : ", url);
   // console.log("window :", window.location)
   // To fix issues with window.screen in multi-monitor setups, the easier option is to
   // center the pop-up over the parent window.
@@ -66,18 +64,18 @@ const openPopup = (url) => {
   return popup;
 };
 
-const closePopup = (popupRef) => {
-  console.log("Closing pop-up");
-  popupRef.current?.close();
-};
+// const closePopup = (popupRef) => {
+//   console.log("Closing pop-up");
+//   popupRef.current?.close();
+// };
 
-const cleanup = (intervalRef, popupRef, handleMessageListener) => {
-  clearInterval(intervalRef.current);
-  closePopup(popupRef);
-  removeState();
-  window.removeEventListener("message", handleMessageListener);
-};
-/*GENERATES THE GOOGLE AUTH URL WITH CORRECTS PARAMS*/
+// const cleanup = (intervalRef, popupRef, handleMessageListener) => {
+//   clearInterval(intervalRef.current);
+//   closePopup(popupRef);
+//   removeState();
+//   window.removeEventListener("message", handleMessageListener);
+// };
+/*GENERATES THE AUTH URL WITH CORRECTS PARAMS*/
 const enhanceAuthorizeUrl = (
   authorizeUrl,
   clientId,
@@ -108,16 +106,13 @@ const use0Auth2 = (props) => {
     redirectUri,
     scope,
     responseType,
-    // extraQueryParameters = {},
-    onSuccess,
-    onError,
     redirectedFrom,
   } = props;
 
   // const extraQueryParametersRef = useRef(extraQueryParameters);
   const popupRef = useRef();
   const intervalRef = useRef();
-  const [{ loading, error }, setUI] = useState({ loading: false, error: null });
+  // const [{ loading, error }, setUI] = useState({ loading: false, error: null });
   // const [data, setData] = useLocalStorageState(
   //   `${responseType}-${authorizeUrl}-${clientId}-${scope}`,
   //   {
@@ -128,10 +123,10 @@ const use0Auth2 = (props) => {
   /*MEMOIZED CALLBACK FUNC */
   const getAuth = useCallback(() => {
     // 1. Init
-    setUI({
-      loading: true,
-      error: null,
-    });
+    // setUI({
+    //   loading: true,
+    //   error: null,
+    // });
 
     // 2. Generate and save state
     const state = generateState();
@@ -159,53 +154,20 @@ const use0Auth2 = (props) => {
     );
 
     console.log("windw after openPopup assigned to ref: ", window.location);
-    async function handleMessageListener(message) {
-      console.log("HERE");
-      try {
-        // if (message.origin !== expectedOAuthServerDomain) {
-        //   // Ignore messages from unexpected origins
-        //   return;
-        // }
-        const type = message && message.data && message.data.type;
-        console.log("IN TRY type: ", message);
-        if (type === OAUTH_RESPONSE) {
-          const errorMaybe = message && message.data && message.data.error;
-          console.log("errorMaybe: ", errorMaybe);
-          if (errorMaybe) {
-            setUI({
-              loading: false,
-              error: errorMaybe || "Unknown Error",
-            });
-          } else {
-            let payload = message?.data?.payload;
-
-            console.log("payload: ", payload);
-          }
-        } else return;
-      } catch (genericError) {
-        console.error(genericError);
-      } finally {
-        console.log("at the end");
-        // Clear stuff ...
-        // cleanup(intervalRef, popupRef, handleMessageListener);
-      }
-    }
-    let nount = 0;
+   
+    // let nount = 0;
     // 4. Begin interval to check if popup was closed forcefully by the user
     intervalRef.current = setInterval(() => {
-      nount++;
-      console.log("is interval working:", nount);
-      console.log("popRef.current: ", popupRef.current.window.closed);
       const popupClosed =
         !popupRef.current ||
         !popupRef.current.window ||
         popupRef.current.window.closed;
       if (popupClosed) {
         // Popup was closed before completing auth...
-        setUI((ui) => ({
-          ...ui,
-          loading: false,
-        }));
+        // setUI((ui) => ({
+        //   ...ui,
+        //   loading: false,
+        // }));
         console.warn(
           "Warning: Popup was closed before completing authentication."
         );
@@ -215,10 +177,10 @@ const use0Auth2 = (props) => {
     }, 250);
 
     // Remove listener(s) on unmount
-    return () => {
-      window.removeEventListener("message", handleMessageListener);
-      // if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    // return () => {
+    //   window.removeEventListener("message", handleMessageListener);
+    //   // if (intervalRef.current) clearInterval(intervalRef.current);
+    // };
   }, [
     authorizeUrl,
     clientId,
@@ -228,7 +190,7 @@ const use0Auth2 = (props) => {
     // onSuccess,
     // onError,
     redirectedFrom,
-    setUI,
+    // setUI,
     // setData,
   ]);
   return { getAuth };

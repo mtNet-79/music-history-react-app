@@ -14,7 +14,7 @@ let generateRandomAvatar = () => {
 
 let users = {
   rando: {
-    id: 123,
+    id: 12,
     oauth_provider: "google",
     oauth_id: 123,
     email: "rando@gmail.com",
@@ -23,19 +23,27 @@ let users = {
     avatar_url: null,
     role: "user",
     created_at: '2019-11-12 18:23:30.239216',
-    favorite_composers: null,
-    favorite_performers: null
+    favorite_composers: [],
+    favorite_performers: []  
   },
   mthornton: {
-    id: "mthornton",
-    password: "password",
-    name: "Mike Thornton",
-    avatarURL: "https://avatar-endpoint.herokuapp.com/api/",
+    id: 3,
+    user_name: "mthornton",
+    oauth_provider: "google",
+    oauth_id: "104098315359079840489",
+    email: "mtvajranet@gmail.com",
+    first_name: "Michael",
+    last_name: "Thornton",
+    avatar_url: null,
+    role: "user",
+    created_at: '2019-11-12 18:23:30.239216',
+    avatarURL: "https://lh3.googleusercontent.com/a/AAcHTteI-9i2fi0dFK5ksF-LhSHMOCHLHSJp9U1EyC1X=s96-c",
     favorite_composers: [],
     favorite_performers: [],
   },
   sarahedo: {
-    id: "sarahedo",
+    id: 4,
+    user_name: "sarahedo",
     password: "password123",
     name: "Sarah Edo",
     avatarURL: "https://tylermcginnis.com/would-you-rather/sarah.jpg",
@@ -43,14 +51,16 @@ let users = {
     favorite_performers: [],
   },
   tylermcginnis: {
-    id: "tylermcginnis",
+    id: 5,
+    user_name: "tylermcginnis",
     password: "abc321",
     name: "Tyler McGinnis",
     favorite_composers: [],
     favorite_performers: [],
   },
   mtsamis: {
-    id: "mtsamis",
+    id: 6,
+    user_name: "mtsamis",
     password: "xyz123",
     name: "Mike Tsamis",
     avatarURL: null,
@@ -58,7 +68,8 @@ let users = {
     favorite_performers: [],
   },
   zoshikanlu: {
-    id: "zoshikanlu",
+    id: 7,
+    user_name: "zoshikanlu",
     password: "pass246",
     name: "Zenobia Oshikanlu",
     avatarURL: null,
